@@ -1,6 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
+#define MAX_PARTICLES 100;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -12,6 +13,7 @@
 #include "../gl/Light3D.h"
 #include "../gl/texture.h"
 #include "../utils/StopWatch.h"
+#include "Snowflake.h"
 
 class SnowStormSimulation : public TrackballViewer
 {
@@ -35,6 +37,10 @@ protected:
     void draw_object(Shader& sh, Mesh3D& mesh);
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
     
+    //init particles
+
+    void init_particles();
+    
 protected:
 	
 	// mesh objects
@@ -55,6 +61,9 @@ protected:
 	float daysPerMiliSecond;
 	float totalDaysElapsed;
 	float currentTime;
+    
+    std::vector<Snowflake> particles;
+    
 };
 
 
