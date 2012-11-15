@@ -62,7 +62,7 @@ protected:
 	float totalDaysElapsed;
 	float currentTime;
     
-    std::vector<Snowflake> particles;
+    std::vector<Snowflake*> particles;
     
 };
 

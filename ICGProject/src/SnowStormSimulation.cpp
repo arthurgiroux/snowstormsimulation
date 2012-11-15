@@ -29,8 +29,8 @@ init()
     set_scene_pos(Vector3(0.0, 0.0, 0.0), 2.0);
 	
 	// load mesh shader
-	m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
-	m_meshShaderTexture.create("tex.vs","tex.fs");
+	//m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
+	//m_meshShaderTexture.create("tex.vs","tex.fs");
     
 	currentTime = 0.0;
 	isWatchOn = false;
@@ -130,21 +130,22 @@ draw_scene(DrawMode _draw_mode)
 {
 
 	// clear screen
+    glEnable(GL_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
 	
-	m_meshShaderTexture.bind();
+	//m_meshShaderTexture.bind();
 	
 	// set parameters
-	m_meshShaderTexture.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
-	m_meshShaderTexture.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+	//m_meshShaderTexture.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+	//m_meshShaderTexture.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
     
     
     
     
-    glPointSize(100.0);
+    glPointSize(2);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
     glBegin(GL_POINTS);
@@ -153,11 +154,9 @@ draw_scene(DrawMode _draw_mode)
     double max = MAX_PARTICLES;
     for(int i = 0; i < max; i++)
     {
-        Snowflake flake = particles[i];
-        glVertex3d(flake.x, flake.y, flake.z);
-        cout << flake.y << endl;
-        flake.updatePosition();
-        
+        Snowflake* flake = particles[i];
+        glVertex3d(flake->x, flake->y, flake->z);
+        flake->updatePosition();
     }
 
     glEnd();
@@ -204,10 +203,10 @@ void SnowStormSimulation::init_particles()
     double max = MAX_PARTICLES;
     for(unsigned int j = 0; j < max; j++)
     {
-        double x = rand() / (double) RAND_MAX;
-        double y = rand() / (double) RAND_MAX;
-        double z = rand() / (double) RAND_MAX;
-        particles.push_back(Snowflake(x,y,z));
+        float x = 2 * (double)rand() / (double)RAND_MAX - 1;
+        float y = 2 * (double)rand() / (double)RAND_MAX - 1;
+        float z = 2 * (double)rand() / (double)RAND_MAX - 1;
+        particles.push_back(new Snowflake(x,y,z));
     }
     
     

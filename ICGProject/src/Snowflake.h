@@ -20,22 +20,22 @@ class Snowflake
 {
 public:
     
-    double x;
-    double y;
-    double z;
+    float x;
+    float y;
+    float z;
     
     
     Vector3 acceleration;
     
     
-    Snowflake(double x, double y , double z);
+    Snowflake(float x, float y , float z);
     Snowflake();
     
     
     void updatePosition();
     
-    
-    
+private:
+    void randomInit();
     
     
     
