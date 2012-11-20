@@ -44,7 +44,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/arthur/Documents/xcode/ICGProject/ICGProject/src"
+      customWorkingDirectory = "/Users/arthur/Documents/icgproject/snowstormsimulation/ICGProject/src"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -60,20 +60,24 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/arthur/Desktop/Exercise4/data/stars/stars.obj"
+            argument = "/Users/arthur/Documents/icgproject/snowstormsimulation/ICGProject/data/earth2.obj"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/arthur/Downloads/Exercise4/data/earth/earth.obj"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/arthur/Documents/icgproject/snowstormsimulation/ICGProject/data/scene.obj"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/arthur/Desktop/Exercise4/data/sun/sun.obj"
-            isEnabled = "YES">
+            argument = "/Users/arthur/Documents/icgproject/snowstormsimulation/ICGProject/data/earth.obj"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/arthur/Desktop/Exercise4/data/earth/earth.obj"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "/Users/arthur/Desktop/Exercise4/data/moon/moon.obj"
-            isEnabled = "YES">
+            argument = "/Users/arthur/Documents/icgproject/snowstormsimulation/ICGProject/data/test.obj"
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

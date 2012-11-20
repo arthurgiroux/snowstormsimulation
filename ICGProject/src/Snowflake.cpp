@@ -7,8 +7,6 @@
 //
 
 #include "Snowflake.h"
-#define Y_REDUCTION 0.01;
-
 
 
 Snowflake::Snowflake(float _x, float _y, float _z){
@@ -24,16 +22,18 @@ Snowflake::Snowflake() {
 }
 
 void Snowflake::randomInit() {
-    x = 2 * (double)rand() / (double)RAND_MAX - 1;
-    y = 1;
-    z = 2 * (double)rand() / (double)RAND_MAX - 1;
+    x = 40 * (double)rand() / (double)RAND_MAX - 20;
+    y = 20 * (double)rand() / (double)RAND_MAX;
+    z = 40 * (double)rand() / (double)RAND_MAX - 20;
 }
 
-void Snowflake::updatePosition(){
+void Snowflake::updatePosition(Vector3 force){
     
     //make the snow fall !
-    y -= Y_REDUCTION;
-    if (y <= -1) {
+    x += force.x;
+    y += force.y;
+    z += force.z;
+    if (y <= 0) {
         randomInit();
     }
     // Between -0.002 and 0.002

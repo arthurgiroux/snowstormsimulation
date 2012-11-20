@@ -36,7 +36,7 @@ protected:
     
     void draw_object(Shader& sh, Mesh3D& mesh);
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
-    
+        
     //init particles
 
     void init_particles();
@@ -44,7 +44,9 @@ protected:
 protected:
 	
 	// mesh objects
-	Mesh3D m_SnowFlake;
+	//Mesh3D m_SnowFlake;
+    
+    Mesh3D m_Scene;
 	
 	// directional light
 	Light3D m_light;
@@ -61,6 +63,8 @@ protected:
 	float daysPerMiliSecond;
 	float totalDaysElapsed;
 	float currentTime;
+    
+    float secondsElapsed;
     
     std::vector<Snowflake*> particles;
     

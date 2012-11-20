@@ -25,6 +25,7 @@ public:
     float z;
     
     
+    
     Vector3 acceleration;
     
     
@@ -32,7 +33,7 @@ public:
     Snowflake();
     
     
-    void updatePosition();
+    void updatePosition(Vector3 force);
     
 private:
     void randomInit();

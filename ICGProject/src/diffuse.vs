@@ -2,8 +2,20 @@ uniform mat4 modelworld;
 uniform mat4 worldcamera;
 uniform mat4 projection;
 
+uniform mat3 worldcameraNormal;
+uniform mat3 modelworldNormal;
+uniform vec3 lightposition;
+
+varying vec3 normal, lightDir;
 void main()
 {
-	// transform vertex to camera coordinates
 	gl_Position = projection * worldcamera * modelworld * gl_Vertex;
+    
+    normal = normalize( worldcameraNormal * modelworldNormal * gl_Normal );
+	
+	vec3 vertex = vec3( worldcamera * modelworld * gl_Vertex );
+	
+	//Exercise 4.4: Calculate direct and indirect light directions
+    lightDir = (lightposition - vertex);
+
 }

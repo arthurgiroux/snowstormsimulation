@@ -14,5 +14,9 @@ int main(int argc, char **argv)
 	
 	SnowStormSimulation window("Snow Storm Simulation", 800, 800);
 	
+    if (argc > 1) {
+        window.load_mesh(argv[1]);
+    }
+    
 	glutMainLoop();
 }
