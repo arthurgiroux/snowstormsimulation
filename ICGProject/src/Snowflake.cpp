@@ -9,33 +9,39 @@
 #include "Snowflake.h"
 
 
-Snowflake::Snowflake(float _x, float _y, float _z){
-    
-    x = _x;
-    y = _y;
-    z = _z;
-    
+Snowflake::Snowflake(Vector3 initialPos){
+    pos = initialPos;
 }
 
 Snowflake::Snowflake() {
-    randomInit();
+    hasBeenInit = false;
 }
 
-void Snowflake::randomInit() {
-    x = 40 * (double)rand() / (double)RAND_MAX - 20;
-    y = 20 * (double)rand() / (double)RAND_MAX;
-    z = 40 * (double)rand() / (double)RAND_MAX - 20;
+float Snowflake::randomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
 }
 
-void Snowflake::updatePosition(Vector3 force){
-    
-    //make the snow fall !
-    x += force.x;
-    y += force.y;
-    z += force.z;
-    if (y <= 0) {
-        randomInit();
+void Snowflake::randomInit(Vector3 min, Vector3 max) {
+    pos = Vector3(randomFloat(min.x, max.x),
+                  max.y,
+                  randomFloat(min.z, max.z));
+    velocity = Vector3(randomFloat(-0.005, 0.005), randomFloat(0, 0.05), randomFloat(-0.005, 0.005));
+}
+
+void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
+    if (!hasBeenInit) {
+        randomInit(min, max);
+        hasBeenInit = true;
+    }
+    // Make the snow fall in world
+    pos += velocity;
+    pos += force;
+    if (pos.x < min.x || pos.y < min.y || pos.z < min.z || pos.x > max.x || pos.y > max.y || pos.z > max.z) {
+        randomInit(min, max);
     }
     // Between -0.002 and 0.002
-    x += ((4 * ((double)rand() / (double)RAND_MAX)) - 2) / 1000.0;
+    pos.x += randomFloat(-0.002, 0.002);
 }

@@ -231,6 +231,15 @@ int Shader::getUniformLocation(const std::string& _name) const
 	return loc;
 }
 ///////////////////////////////////////////////////////////////////////////
+int Shader::getAttributeLocation(const std::string& _name) const
+{
+	assert(programObj_ != 0);
+	int loc = glGetAttribLocation(programObj_, _name.c_str());
+	if(loc == -1) printf("No attribute %s\n", _name.c_str());
+	//assert(loc != -1);
+	return loc;
+}
+///////////////////////////////////////////////////////////////////////////
 void Shader::clear()
 {
 	if(programObj_ != 0)
@@ -239,4 +248,16 @@ void Shader::clear()
 		programObj_ = 0;
 	}
 }
+
 ///////////////////////////////////////////////////////////////////////////
+void Shader::setFloatAttribute(const std::string& _name, float _f) const
+{
+	assert(programObj_ != 0);
+	glVertexAttrib1f(getAttributeLocation(_name.c_str()), _f);
+}
+///////////////////////////////////////////////////////////////////////////
+void Shader::setVector3Attribute(const std::string& _name, float _v1, float _v2, float _v3) const
+{
+	assert(programObj_ != 0);
+	glVertexAttrib4f(getAttributeLocation(_name.c_str()), _v1, _v2, _v3, 1);
+}

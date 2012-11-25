@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "../math/Vector3.h"
-
+#include "../math/Matrix4.h"
 
 
 
@@ -20,28 +20,22 @@ class Snowflake
 {
 public:
     
-    float x;
-    float y;
-    float z;
-    
-    
+    Vector3 pos;
     
     Vector3 acceleration;
+    Vector3 velocity;
     
     
-    Snowflake(float x, float y , float z);
+    Snowflake(Vector3 initialPos);
     Snowflake();
     
     
-    void updatePosition(Vector3 force);
+    void updatePosition(Vector3 force, Vector3 min, Vector3 max);
     
 private:
-    void randomInit();
-    
-    
-    
-    
-    
+    bool hasBeenInit;
+    void randomInit(Vector3 min, Vector3 max);
+    float randomFloat(float a, float b);
 };
 
 

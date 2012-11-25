@@ -30,6 +30,7 @@ init()
 	
 	// load mesh shader
     m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
+    m_meshShaderParticle.create("particle.vs", "particle.fs");
 	//m_meshShaderTexture.create("tex.vs","tex.fs");
     
     m_light.translateWorld(Vector3(-3, 5, -10));
@@ -92,14 +93,16 @@ special(int key, int x, int y)
 	switch (key)
 	{
 		case GLUT_KEY_UP:
-			daysPerMiliSecond += 0.001;
-			if(daysPerMiliSecond > 0.1)
-				daysPerMiliSecond = 0.1;
+            m_camera.translateObject(Vector3(0, 0, -0.2));
 			break;
 		case GLUT_KEY_DOWN:
-			daysPerMiliSecond -= 0.001;
-			if(daysPerMiliSecond < 0.001)
-				daysPerMiliSecond = 0.001;
+            m_camera.translateObject(Vector3(0, 0, 0.2));
+			break;
+		case GLUT_KEY_LEFT:
+            m_camera.translateObject(Vector3(-0.2, 0, 0));
+			break;
+		case GLUT_KEY_RIGHT:
+            m_camera.translateObject(Vector3(0.2, 0, 0));
 			break;
 		default:
 			TrackballViewer::special(key, x, y);
@@ -131,7 +134,7 @@ draw_scene(DrawMode _draw_mode)
 {
 
 	// clear screen
-    //glEnable(GL_POINT_SIZE);
+    glEnable(GL_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -154,41 +157,132 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.6, 0.2, 0.4);
 	
     draw_object(m_meshShaderDiffuse, m_Scene);
-
-    
-    glPointSize(2);
-    
-    glBegin(GL_POINTS);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glEnd();
     
     m_meshShaderDiffuse.unbind();
     
-    glPointSize(2);
     
-    glBegin(GL_POINTS);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    //m_meshShaderParticle.bind();
+    
+    m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    m_meshShaderParticle.setFloatUniform("T", secondsElapsed);
+
+    
     
     double max = MAX_PARTICLES;
-    for(int i = 0; i < max; i++)
+    // Unit box in world coordinates
+    Vector3 unitBox[8];
+    unitBox[0] = m_camera.getTransformation() * Vector3(-20, 5, -3); // top front left
+    unitBox[1] = m_camera.getTransformation() * Vector3(20, 5, -3); // top front right
+    unitBox[2] = m_camera.getTransformation() * Vector3(-20, -1, -3); // bottom front left
+    unitBox[3] = m_camera.getTransformation() * Vector3(20, -1, -3); // bottom front right
+    unitBox[4] = m_camera.getTransformation() * Vector3(-20, 5, -20); // top back left
+    unitBox[5] = m_camera.getTransformation() * Vector3(20, 5, -20); // top back right
+    unitBox[6] = m_camera.getTransformation() * Vector3(-20, -1, -20); // bottom back left
+    unitBox[7] = m_camera.getTransformation() * Vector3(20, -1, -20); // bottom back right
+    
+    
+    
+    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[1],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[2],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[3],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[4],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[5],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[6],
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);*/
+    Vector3 minPos = unitBox[0];
+    Vector3 maxPos = unitBox[0];
+    
+    // Get the maximum / minimum for x, y and z
+    for (int i=0; i < 8; ++i) {
+        if (unitBox[i].x < minPos.x) {
+            minPos.x = unitBox[i].x;
+        }
+        if (unitBox[i].x > maxPos.x) {
+            maxPos.x = unitBox[i].x;
+        }
+        if (unitBox[i].y < minPos.y) {
+            minPos.y = unitBox[i].y;
+        }
+        if (unitBox[i].y > maxPos.y) {
+            maxPos.y = unitBox[i].y;
+        }
+        if (unitBox[i].z < minPos.z) {
+            minPos.z = unitBox[i].z;
+        }
+        if (unitBox[i].z > maxPos.z) {
+            maxPos.z = unitBox[i].z;
+        }
+    }
+    
+    // (Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright)
+    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, minPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, minPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, minPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, maxPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, maxPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));
+    
+    */
+    glColor3f(1.f, 1.f, 1.f);
+    glBegin(GL_POINTS);
+    for (int i = 0; i < max; i++)
     {
         Snowflake* flake = particles[i];
-        Vector3 proj = Vector3(flake->x, flake->y, flake->z);
-        Vector3 tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * proj;
-        cout << tmp.x << " " << tmp.y << " " << tmp.z << endl;
+        flake->updatePosition(Vector3(0, -0.009f, 0), minPos, maxPos);
+        Vector3 tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * flake->pos;
+        //m_meshShaderParticle.setVector3Attribute("initPos", flake->x, flake->y, flake->z);
         glVertex3d(tmp.x, tmp.y, tmp.z);
-        flake->updatePosition(Vector3(0, -0.009f, 0));
     }
-
+    
     glEnd();
     glFinish();
-    cout << secondsElapsed << endl;
-    secondsElapsed = 0;
+    //m_meshShaderParticle.unbind();
+    
+
     
     
     
 	
 		
+}
+
+void SnowStormSimulation::draw_cube(Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright) {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_LINES);
+    glVertex3d(topfrontleft.x, topfrontleft.y, topfrontleft.z);
+    glVertex3d(topfrontright.x, topfrontright.y, topfrontright.z);
+    glVertex3d(topfrontleft.x, topfrontleft.y, topfrontleft.z);
+    glVertex3d(bottomfrontleft.x, bottomfrontleft.y, bottomfrontleft.z);
+    glVertex3d(topfrontleft.x, topfrontleft.y, topfrontleft.z);
+    glVertex3d(topbackleft.x, topbackleft.y, topbackleft.z);
+    
+    glVertex3d(bottomfrontright.x, bottomfrontright.y, bottomfrontright.z);
+    glVertex3d(topfrontright.x, topfrontright.y, topfrontright.z);
+    glVertex3d(bottomfrontright.x, bottomfrontright.y, bottomfrontright.z);
+    glVertex3d(bottomfrontleft.x, bottomfrontleft.y, bottomfrontleft.z);
+    glVertex3d(bottomfrontright.x, bottomfrontright.y, bottomfrontright.z);
+    glVertex3d(bottombackright.x, bottombackright.y, bottombackright.z);
+    
+    glVertex3d(topbackright.x, topbackright.y, topbackright.z);
+    glVertex3d(topfrontright.x, topfrontright.y, topfrontright.z);
+    glVertex3d(topbackright.x, topbackright.y, topbackright.z);
+    glVertex3d(bottombackright.x, bottombackright.y, bottombackright.z);
+    glVertex3d(topbackright.x, topbackright.y, topbackright.z);
+    glVertex3d(topbackleft.x, topbackleft.y, topbackleft.z);
+    
+    
+    glVertex3d(bottombackleft.x, bottombackleft.y, bottombackleft.z);
+    glVertex3d(topbackleft.x, topbackleft.y, topbackleft.z);
+    glVertex3d(bottombackleft.x, bottombackleft.y, bottombackleft.z);
+    glVertex3d(bottomfrontleft.x, bottomfrontleft.y, bottomfrontleft.z);
+    glVertex3d(bottombackleft.x, bottombackleft.y, bottombackleft.z);
+    glVertex3d(bottombackright.x, bottombackright.y, bottombackright.z);
+    
+    glEnd();
 }
 
 void SnowStormSimulation::load_mesh(const std::string& filenameObj) {

@@ -8,7 +8,6 @@ void main()
 	vec4 finalcolor = vec4(0.0);
     
     vec3 N = normalize(normal);
-	//vec3 Ldir = vec3(0, 0, 1);
     vec3 Ldir = normalize(lightDir);
     float lambertTermDir = dot(N, Ldir);
     

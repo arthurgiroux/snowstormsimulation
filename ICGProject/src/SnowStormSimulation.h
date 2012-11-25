@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 100;
+#define MAX_PARTICLES 10000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -34,6 +34,10 @@ protected:
 	
 	virtual void draw_scene(DrawMode _draw_mode);
     
+    void draw_cube(Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft,
+                   Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright,
+                   Vector3 bottombackleft, Vector3 bottombackright);
+    
     void draw_object(Shader& sh, Mesh3D& mesh);
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
         
@@ -53,8 +57,7 @@ protected:
 	
 	// mesh shader
 	Shader m_meshShaderDiffuse;
-	Shader m_meshShaderPhong;
-	Shader m_meshShaderTexture;
+	Shader m_meshShaderParticle;
 	
 	//timer
 	StopWatch watch;
