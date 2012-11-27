@@ -225,7 +225,7 @@ void
 TrackballViewer::
 mouse(int button, int state, int x, int y)
 {
-  // mouse press
+  /*// mouse press
   if (state == GLUT_DOWN)
   {
     last_x_ = x;
@@ -247,8 +247,8 @@ mouse(int button, int state, int x, int y)
     else if (button == 4)
       zoom(0, (int)(y + 0.05*width_));
   }
-
-	modifiers_ = glutGetModifiers();
+*/
+	//modifiers_ = glutGetModifiers();
 	
   glutPostRedisplay();
 }
@@ -290,6 +290,32 @@ motion(int x, int y)
   glutPostRedisplay();
 }
 
+//-----------------------------------------------------------------------------
+
+void
+TrackballViewer::
+passivemotion(int x, int y)
+{
+    
+    int diffx = x-last_x_;
+    int diffy = y-last_y_;
+    
+    last_x_ = x;
+    last_y_ = y;
+    
+    cameraPosXrot = (float) M_PI * diffy / 180.0;
+    cameraPosYrot = (float) M_PI * diffx / 180.0;
+    
+    float tmp = cameraPosAngleX + cameraPosXrot;
+    if (tmp < M_PI/2.0 && tmp >= -M_PI/2.0) {
+        cameraPosAngleX = tmp;
+        m_camera.rotateObject(Vector3(1, 0, 0), -cameraPosXrot);
+        m_camera.setAngle(cameraPosAngleX);
+    }
+    m_camera.rotateAroundAxisWorld(m_camera.origin(), Vector3(0, 1, 0), -cameraPosYrot);
+
+    glutPostRedisplay();
+}
 
 //-----------------------------------------------------------------------------
 

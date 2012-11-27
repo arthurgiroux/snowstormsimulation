@@ -123,10 +123,7 @@ public:
 		                   m[1][0]*v.x + m[1][1]*v.y + m[1][2]*v.z + m[1][3],
 						   m[2][0]*v.x + m[2][1]*v.y + m[2][2]*v.z + m[2][3]);
 		double w = m[3][0]*v.x + m[3][1]*v.y + m[3][2]*v.z + m[3][3];
-		if (w != 0)
             return u/w;
-        else
-            return u;
 	}
 
 

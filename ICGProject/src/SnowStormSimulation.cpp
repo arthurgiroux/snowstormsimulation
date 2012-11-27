@@ -25,8 +25,13 @@ init()
     // initialize parent
     TrackballViewer::init();
     
+    
+    cameraPosX = 0;
+    cameraPosY = 2;
+    cameraPosZ = 0;
+    
     // set camera to look at world coordinate center
-    set_scene_pos(Vector3(0.0, 0.0, 0.0), 10.0);
+    set_scene_pos(Vector3(cameraPosX, cameraPosY, cameraPosZ), 1.0);
 	
 	// load mesh shader
     m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
@@ -83,6 +88,7 @@ keyboard(int key, int x, int y)
 	glutPostRedisplay();
 }
 
+
 //-----------------------------------------------------------------------------
 
 
@@ -93,16 +99,16 @@ special(int key, int x, int y)
 	switch (key)
 	{
 		case GLUT_KEY_UP:
-            m_camera.translateObject(Vector3(0, 0, -0.2));
+            m_camera.translateObject(Vector3(0, 0.1*tan(m_camera.getAngle()), -0.1));
 			break;
 		case GLUT_KEY_DOWN:
-            m_camera.translateObject(Vector3(0, 0, 0.2));
+            m_camera.translateObject(Vector3(0, -0.1*tan(m_camera.getAngle()), 0.1));
 			break;
 		case GLUT_KEY_LEFT:
-            m_camera.translateObject(Vector3(-0.2, 0, 0));
+            m_camera.translateObject(Vector3(-0.1, 0.1*tan(m_camera.getAngle()), 0));
 			break;
 		case GLUT_KEY_RIGHT:
-            m_camera.translateObject(Vector3(0.2, 0, 0));
+            m_camera.translateObject(Vector3(0.1, -0.1*tan(m_camera.getAngle()), 0));
 			break;
 		default:
 			TrackballViewer::special(key, x, y);
@@ -137,7 +143,10 @@ draw_scene(DrawMode _draw_mode)
     glEnable(GL_POINT_SIZE);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    
 	//glDisable(GL_CULL_FACE);
 	//glEnable(GL_MULTISAMPLE);
 	
@@ -172,25 +181,30 @@ draw_scene(DrawMode _draw_mode)
     double max = MAX_PARTICLES;
     // Unit box in world coordinates
     Vector3 unitBox[8];
-    unitBox[0] = m_camera.getTransformation() * Vector3(-20, 5, -3); // top front left
-    unitBox[1] = m_camera.getTransformation() * Vector3(20, 5, -3); // top front right
-    unitBox[2] = m_camera.getTransformation() * Vector3(-20, -1, -3); // bottom front left
-    unitBox[3] = m_camera.getTransformation() * Vector3(20, -1, -3); // bottom front right
-    unitBox[4] = m_camera.getTransformation() * Vector3(-20, 5, -20); // top back left
-    unitBox[5] = m_camera.getTransformation() * Vector3(20, 5, -20); // top back right
-    unitBox[6] = m_camera.getTransformation() * Vector3(-20, -1, -20); // bottom back left
-    unitBox[7] = m_camera.getTransformation() * Vector3(20, -1, -20); // bottom back right
+    int boxHeight = 5;
+    int boxWidth = 5;
+    int boxHeightStart = -1;
+    int boxFarPlane = -5;
+    int boxNearPlane = 5;
+    unitBox[0] = m_camera.getTransformation() * Vector3(-boxWidth, boxHeight, boxNearPlane); // top front left
+    unitBox[1] = m_camera.getTransformation() * Vector3(boxWidth, boxHeight, boxNearPlane); // top front right
+    unitBox[2] = m_camera.getTransformation() * Vector3(-boxWidth, boxHeightStart, boxNearPlane); // bottom front left
+    unitBox[3] = m_camera.getTransformation() * Vector3(boxWidth, boxHeightStart, boxNearPlane); // bottom front right
+    unitBox[4] = m_camera.getTransformation() * Vector3(-boxWidth, boxHeight, boxFarPlane); // top back left
+    unitBox[5] = m_camera.getTransformation() * Vector3(boxWidth, boxHeight, boxFarPlane); // top back right
+    unitBox[6] = m_camera.getTransformation() * Vector3(-boxWidth, boxHeightStart, boxFarPlane); // bottom back left
+    unitBox[7] = m_camera.getTransformation() * Vector3(boxWidth, boxHeightStart, boxFarPlane); // bottom back right
     
     
-    
-    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
+    glColor3f(1.0f, 1.0f, 1.0f);
+    draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[1],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[2],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[3],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[4],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[5],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[6],
-              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);*/
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);
     Vector3 minPos = unitBox[0];
     Vector3 maxPos = unitBox[0];
     
@@ -217,7 +231,8 @@ draw_scene(DrawMode _draw_mode)
     }
     
     // (Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright)
-    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
+    glColor3f(1.0f, 0.0f, 0.0f);
+    draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, minPos.z),
@@ -226,7 +241,7 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));
     
-    */
+    
     glColor3f(1.f, 1.f, 1.f);
     glBegin(GL_POINTS);
     for (int i = 0; i < max; i++)
@@ -251,7 +266,6 @@ draw_scene(DrawMode _draw_mode)
 }
 
 void SnowStormSimulation::draw_cube(Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright) {
-    glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     glVertex3d(topfrontleft.x, topfrontleft.y, topfrontleft.z);
     glVertex3d(topfrontright.x, topfrontright.y, topfrontright.z);

@@ -40,6 +40,8 @@ protected:
     
     void draw_object(Shader& sh, Mesh3D& mesh);
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
+    
+    void moveCamera();
         
     //init particles
 

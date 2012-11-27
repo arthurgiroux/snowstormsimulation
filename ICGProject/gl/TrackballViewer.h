@@ -59,6 +59,7 @@ protected:
     virtual void init();
     virtual void reshape(int w, int h); 
     virtual void motion(int x, int y);
+    virtual void passivemotion(int x, int y);
     virtual void mouse(int button, int state, int x, int y);
     virtual void keyboard(int key, int x, int y);
     virtual void special(int key, int x, int y);
@@ -87,6 +88,15 @@ protected:
     bool     button_down_[10];
     int      modifiers_;
     
+    
+    float cameraPosX;
+    float cameraPosY;
+    float cameraPosZ;
+    float cameraPosXrot = 0;
+    float cameraPosYrot = 0;
+    float cameraPosAngleX = 0;
+    float cameraPosAngleY = 0;
+        
 	Vector3 m_center;
 	
 	// camera object

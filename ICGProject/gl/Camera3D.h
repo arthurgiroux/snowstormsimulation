@@ -134,6 +134,10 @@ public: //------------------------------------------------ public methods
         right = 1;
 #endif      
     }
+    
+	double getAngle() { return m_angle; }
+    
+    void setAngle(float _angle) { m_angle = _angle; }
 	
 	
 protected:
@@ -178,6 +182,7 @@ private: //------------------------------------------------------- private data
 	double m_near;		// near clipping plane
 	double m_far;		// far clipping plane
 	double m_radius;	// camera view radius
+    double m_angle;
 	
 	Matrix4 m_perspectiveProjectionMatrix;
 };

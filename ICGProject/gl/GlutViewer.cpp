@@ -33,8 +33,9 @@ GlutViewer(const char* _title, int _width, int _height)
 {
   // create window
   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_ALPHA | GLUT_MULTISAMPLE );
-  //glutInitDisplayString("rgb double alpha depth>=16 samples>=16");
+  glutInitDisplayString("rgb double alpha depth>=16 samples>=16");
   glutInitWindowSize(_width, _height);
+
   windowID_ = glutCreateWindow(_title);
   windows__[windowID_] = this;
 
