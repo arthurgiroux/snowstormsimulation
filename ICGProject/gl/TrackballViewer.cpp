@@ -305,12 +305,14 @@ passivemotion(int x, int y)
     
     cameraPosXrot = (float) M_PI * diffy / 180.0;
     cameraPosYrot = (float) M_PI * diffx / 180.0;
+    cameraPosAngleY += cameraPosYrot;
+    m_camera.setAngleY(cameraPosAngleY);
     
     float tmp = cameraPosAngleX + cameraPosXrot;
     if (tmp < M_PI/2.0 && tmp >= -M_PI/2.0) {
         cameraPosAngleX = tmp;
         m_camera.rotateObject(Vector3(1, 0, 0), -cameraPosXrot);
-        m_camera.setAngle(cameraPosAngleX);
+        m_camera.setAngleX(cameraPosAngleX);
     }
     m_camera.rotateAroundAxisWorld(m_camera.origin(), Vector3(0, 1, 0), -cameraPosYrot);
 

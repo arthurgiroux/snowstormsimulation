@@ -135,10 +135,13 @@ public: //------------------------------------------------ public methods
 #endif      
     }
     
-	double getAngle() { return m_angle; }
+	double getAngleX() { return m_angleX; }
     
-    void setAngle(float _angle) { m_angle = _angle; }
+    void setAngleX(float _angle) { m_angleX = _angle; }
 	
+    double getAngleY() { return m_angleY; }
+    
+    void setAngleY(float _angle) { m_angleY = _angle; }
 	
 protected:
 	//! calculate the perspective projection matrix
@@ -182,7 +185,8 @@ private: //------------------------------------------------------- private data
 	double m_near;		// near clipping plane
 	double m_far;		// far clipping plane
 	double m_radius;	// camera view radius
-    double m_angle;
+    double m_angleX;
+    double m_angleY;
 	
 	Matrix4 m_perspectiveProjectionMatrix;
 };

@@ -73,6 +73,8 @@ protected:
     
     std::vector<Snowflake*> particles;
     
+    float walkingSpeed = 0.1;
+    
 };
 
 

@@ -99,16 +99,16 @@ special(int key, int x, int y)
 	switch (key)
 	{
 		case GLUT_KEY_UP:
-            m_camera.translateObject(Vector3(0, 0.1*tan(m_camera.getAngle()), -0.1));
+            m_camera.translateWorld(Vector3(sin(m_camera.getAngleY())*walkingSpeed, 0, -cos(m_camera.getAngleY())*walkingSpeed));
 			break;
 		case GLUT_KEY_DOWN:
-            m_camera.translateObject(Vector3(0, -0.1*tan(m_camera.getAngle()), 0.1));
+            m_camera.translateWorld(Vector3(-sin(m_camera.getAngleY())*walkingSpeed, 0, cos(m_camera.getAngleY())*walkingSpeed));
 			break;
 		case GLUT_KEY_LEFT:
-            m_camera.translateObject(Vector3(-0.1, 0.1*tan(m_camera.getAngle()), 0));
+            m_camera.translateObject(Vector3(-walkingSpeed, 0, 0));
 			break;
 		case GLUT_KEY_RIGHT:
-            m_camera.translateObject(Vector3(0.1, -0.1*tan(m_camera.getAngle()), 0));
+            m_camera.translateObject(Vector3(walkingSpeed, 0, 0));
 			break;
 		default:
 			TrackballViewer::special(key, x, y);
@@ -197,14 +197,14 @@ draw_scene(DrawMode _draw_mode)
     
     
     glColor3f(1.0f, 1.0f, 1.0f);
-    draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
+    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[1],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[2],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[3],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[4],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[5],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[6],
-              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);*/
     Vector3 minPos = unitBox[0];
     Vector3 maxPos = unitBox[0];
     
@@ -231,16 +231,36 @@ draw_scene(DrawMode _draw_mode)
     }
     
     // (Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright)
-    glColor3f(1.0f, 0.0f, 0.0f);
-    draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
+    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, minPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
-              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
+    glBegin(GL_LINES);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    Vector3 tmp;
+    tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 0);
+    glVertex3d(tmp.x, tmp.y, tmp.z);
+    tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(2, 1, 0);
+    glVertex3d(tmp.x, tmp.y, tmp.z);
     
+    glColor3f(0.0f, 1.0f, 0.0f);
+    tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 0);
+    glVertex3d(tmp.x, tmp.y, tmp.z);
+    tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 2, 0);
+    glVertex3d(tmp.x, tmp.y, tmp.z);
+    
+    
+    glColor3f(0.0f, 0.0f, 1.0f);
+    tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 0);
+    glVertex3d(tmp.x, tmp.y, tmp.z);
+    tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 1);
+    glVertex3d(tmp.x, tmp.y, tmp.z);
+    
+    glEnd();
     
     glColor3f(1.f, 1.f, 1.f);
     glBegin(GL_POINTS);

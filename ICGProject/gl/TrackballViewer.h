@@ -105,7 +105,7 @@ protected:
 	double m_camera_rotation_depth;
 	
 	double m_movRadius;
-	
+    	
 };
 
 
