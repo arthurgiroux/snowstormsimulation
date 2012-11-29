@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 10000;
+#define MAX_PARTICLES 100000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -74,6 +74,11 @@ protected:
     std::vector<Snowflake*> particles;
     
     float walkingSpeed = 0.1;
+    
+    int frame=0;
+    int time;
+    int timebase=0;
+    float fps = 0;
     
 };
 

@@ -80,6 +80,9 @@ keyboard(int key, int x, int y)
             
 			isWatchOn = !isWatchOn;
 			break;
+        case 'f':
+            cout << "fps " << fps << endl;
+			break;
 		default:
 			TrackballViewer::special(key, x, y);
 			break;
@@ -130,6 +133,13 @@ void SnowStormSimulation::idle()
 		secondsElapsed =  (currentTime-prevTime) / 1000.0;		
 		glutPostRedisplay();
 	}
+    frame++;
+	time = glutGet(GLUT_ELAPSED_TIME);
+	if (time - timebase > 1000) {
+        fps = frame*1000.0/(time-timebase);
+	 	timebase = time;
+		frame = 0;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +150,7 @@ draw_scene(DrawMode _draw_mode)
 {
 
 	// clear screen
-    glEnable(GL_POINT_SIZE);
+    glEnable(GL_PROGRAM_POINT_SIZE_EXT);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -148,7 +158,8 @@ draw_scene(DrawMode _draw_mode)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
 	//glDisable(GL_CULL_FACE);
-	//glEnable(GL_MULTISAMPLE);
+	glEnable(GL_MULTISAMPLE);
+
 	
 	m_meshShaderDiffuse.bind();
 	
@@ -163,19 +174,12 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderDiffuse.setMatrix3x3Uniform("modelworldNormal", m_Scene.getTransformation().Inverse().Transpose());
 	m_meshShaderDiffuse.setVector3Uniform("lightposition", lightPosInCamera.x, lightPosInCamera.y, lightPosInCamera.z );
 	m_meshShaderDiffuse.setVector3Uniform("diffuseColor", 0.5, 0.5, 0.5);
-    m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.6, 0.2, 0.4);
+    m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.2, 0.8, 0.2);
 	
     draw_object(m_meshShaderDiffuse, m_Scene);
     
     m_meshShaderDiffuse.unbind();
     
-    
-    //m_meshShaderParticle.bind();
-    
-    m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
-	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
-    m_meshShaderParticle.setFloatUniform("T", secondsElapsed);
-
     
     
     double max = MAX_PARTICLES;
@@ -262,27 +266,29 @@ draw_scene(DrawMode _draw_mode)
     
     glEnd();
     
-    glColor3f(1.f, 1.f, 1.f);
+    m_meshShaderParticle.bind();
+    m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    m_meshShaderParticle.setVector4Uniform("cameraorigin", m_camera.origin().x, m_camera.origin().x, m_camera.origin().z, 0);
+    glEnable(GL_POINT_SPRITE);
+    glEnable(GL_POINT_SMOOTH);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_BLEND);
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glBegin(GL_POINTS);
     for (int i = 0; i < max; i++)
     {
         Snowflake* flake = particles[i];
+        //m_meshShaderParticle.setVector3Attribute("velocity", flake->velocity.x, flake->velocity.y, flake->velocity.z);
+        //m_meshShaderParticle.setVector3Attribute("force", 0, -0.009f, 0);
         flake->updatePosition(Vector3(0, -0.009f, 0), minPos, maxPos);
-        Vector3 tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * flake->pos;
         //m_meshShaderParticle.setVector3Attribute("initPos", flake->x, flake->y, flake->z);
-        glVertex3d(tmp.x, tmp.y, tmp.z);
+        //cout << fabs(flake->pos.z - m_camera.origin().z) << endl;
+        glVertex3d(flake->pos.x, flake->pos.y, flake->pos.z);
     }
-    
     glEnd();
+    m_meshShaderParticle.unbind();
     glFinish();
-    //m_meshShaderParticle.unbind();
-    
-
-    
-    
-    
-	
-		
 }
 
 void SnowStormSimulation::draw_cube(Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright) {

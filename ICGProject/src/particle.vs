@@ -1,14 +1,7 @@
-#version 110
 uniform mat4 worldcamera;
+uniform vec4 cameraorigin;
 uniform mat4 projection;
-uniform vec3 v;
-uniform float tZero;
-attribute vec4 initPos;
-uniform float T;
-  
 void main() {
-    float t = T - tZero;
-    vec3 p;
- 
-    gl_Position = projection * worldcamera * initPos;
+    gl_Position = projection * worldcamera * gl_Vertex;
+    gl_PointSize = clamp(10.0/length(gl_Position - cameraorigin), 1., 5.);
 }
