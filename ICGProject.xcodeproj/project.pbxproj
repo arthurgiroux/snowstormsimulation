@@ -21,6 +21,7 @@
 		8E8C4BAB165129E9000BA3BD /* TrackballViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C4B7B165125A7000BA3BD /* TrackballViewer.cpp */; };
 		8EF94679165C3278008E197D /* particle.fs in Sources */ = {isa = PBXBuildFile; fileRef = 8EF94678165C3278008E197D /* particle.fs */; };
 		8EF9467B165C3281008E197D /* particle.vs in Sources */ = {isa = PBXBuildFile; fileRef = 8EF9467A165C3281008E197D /* particle.vs */; };
+		A7198514166765BF00B98C80 /* Cone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A7198512166765BF00B98C80 /* Cone.cpp */; };
 		A7276D531654D5F600B5546F /* Snowflake.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A7276D511654D5F600B5546F /* Snowflake.cpp */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,8 @@
 		8E8C4BA216512968000BA3BD /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		8EF94678165C3278008E197D /* particle.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = particle.fs; sourceTree = "<group>"; };
 		8EF9467A165C3281008E197D /* particle.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = particle.vs; sourceTree = "<group>"; };
+		A7198512166765BF00B98C80 /* Cone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cone.cpp; sourceTree = "<group>"; };
+		A7198513166765BF00B98C80 /* Cone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cone.h; sourceTree = "<group>"; };
 		A7276D511654D5F600B5546F /* Snowflake.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Snowflake.cpp; sourceTree = "<group>"; };
 		A7276D521654D5F600B5546F /* Snowflake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snowflake.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -190,6 +193,8 @@
 				8E8C4B9216512852000BA3BD /* SolarViewer.cpp */,
 				A7276D521654D5F600B5546F /* Snowflake.h */,
 				A7276D511654D5F600B5546F /* Snowflake.cpp */,
+				A7198513166765BF00B98C80 /* Cone.h */,
+				A7198512166765BF00B98C80 /* Cone.cpp */,
 				8E8C4B9316512852000BA3BD /* SolarViewer.h */,
 				8EF94678165C3278008E197D /* particle.fs */,
 				8EF9467A165C3281008E197D /* particle.vs */,
@@ -260,6 +265,7 @@
 				A7276D531654D5F600B5546F /* Snowflake.cpp in Sources */,
 				8EF94679165C3278008E197D /* particle.fs in Sources */,
 				8EF9467B165C3281008E197D /* particle.vs in Sources */,
+				A7198514166765BF00B98C80 /* Cone.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
