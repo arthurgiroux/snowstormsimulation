@@ -10,7 +10,7 @@
 
 
 Snowflake::Snowflake(Vector3 initialPos){
-    cone = Cone::Cone(Vector3(0,0,0), 5, 10, Vector3(0,1,0));
+    cone = Cone::Cone(Vector3(0,0,0), 0.5,0.5 , Vector3(0,1,0));
     pos = initialPos;
 }
 

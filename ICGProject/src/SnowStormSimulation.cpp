@@ -243,6 +243,7 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
+    draw_cone();
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
@@ -323,6 +324,22 @@ void SnowStormSimulation::draw_cube(Vector3 topfrontleft, Vector3 topfrontright,
     glVertex3d(bottombackright.x, bottombackright.y, bottombackright.z);
     
     glEnd();
+}
+
+void SnowStormSimulation::draw_cone()
+{
+    glPushMatrix(); // pushes the current matrix stack down and makes a copy on top
+    Vector3 trans =  - m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0,0,0);
+    Vector3 rot = m_camera.getProjectionMatrix() * m_camera.getProjectionMatrix().Inverse() * Vector3(1,0,1);
+    Vector3 rot2 = m_camera.getProjectionMatrix() * m_camera.getProjectionMatrix().Inverse() * Vector3(1,0,0);
+    glTranslated(trans.x, trans.y, trans.z);
+    glRotated(180, rot.x, rot.y, rot.z);
+    glRotated(90, rot2.x, rot2.y, rot2.z);
+    
+    glutWireCone(0.5,0.5,32 ,32);
+    glPopMatrix();
+    
+
 }
 
 void SnowStormSimulation::load_mesh(const std::string& filenameObj) {
