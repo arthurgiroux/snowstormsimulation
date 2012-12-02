@@ -49,7 +49,7 @@ init()
     //init particle table
     init_particles();
     
-    
+    glEnable(GL_DEPTH_TEST);   
     
 }
 
@@ -151,7 +151,6 @@ draw_scene(DrawMode _draw_mode)
 
 	// clear screen
     glEnable(GL_PROGRAM_POINT_SIZE_EXT);
-	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     
@@ -269,7 +268,8 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderParticle.bind();
     m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
 	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
-    m_meshShaderParticle.setVector4Uniform("cameraorigin", m_camera.origin().x, m_camera.origin().x, m_camera.origin().z, 0);
+    m_meshShaderParticle.setVector4Uniform("cameraorigin", m_camera.origin().x, m_camera.origin().y, m_camera.origin().z, 0);
+    cout << m_camera.origin().x << " " << m_camera.origin().y << " " << m_camera.origin().z << endl;
     glEnable(GL_POINT_SPRITE);
     glEnable(GL_POINT_SMOOTH);
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
