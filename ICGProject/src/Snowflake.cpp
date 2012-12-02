@@ -10,7 +10,7 @@
 
 
 Snowflake::Snowflake(Vector3 initialPos){
-    cone = Cone::Cone(Vector3(0,0,0), 0.5,0.5 , Vector3(0,1,0));
+    cone = Cone::Cone(Vector3(0,0,0), 1, 2 , Vector3(0,1,0));
     pos = initialPos;
 }
 
@@ -40,7 +40,7 @@ void Snowflake::randomInit(Vector3 min, Vector3 max) {
 }
 
 Vector3 Snowflake::computeAccelerationDueToCone(Cone cone){
-    double openingAngle = atan(cone.radius / cone.height);
+    double openingAngle = atan((float)cone.radius / cone.height);
     //compute the vector between the origin of the cone (the pic) and the snowflake
     Vector3 originToFlake = pos - cone.pos;
     
@@ -54,8 +54,9 @@ Vector3 Snowflake::computeAccelerationDueToCone(Cone cone){
     
     if(flakeIsInCone)
     {
+        //fprintf(stderr, "flake \n");
         //give a test acceleration (normally, should compute the tangent direction, and give an acceleration relative to the distance from the axis
-        Vector3 acceleration = Vector3(100, 100, 100);
+        Vector3 acceleration = Vector3(1000, 1000, 1000);
         return acceleration;
     }
     //if the flake is not in the cone, no special acceleration added
@@ -76,7 +77,15 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
     pos += force;
     
     //@arthur : c'est comme çA qu'on fait? j'ai ajouté l'acceleration directement, comme j'ai vu que t'avais fait la même chose
-    pos += computeAccelerationDueToCone(cone);
+   // pos += computeAccelerationDueToCone(cone);
+    
+    
+    Vector3 acc = computeAccelerationDueToCone(cone);
+    if(acc.x > 0 || acc.y >0 || acc.z > 0)
+    {
+        pos -= velocity;
+        pos -= force;
+    }
     
     if (pos.x < min.x) {
         pos.x = max.x;
@@ -92,9 +101,9 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
         pos.z = min.z;
     }
     //if (pos.y < min.y || pos.y > max.y || pos.x < min.x || pos.x > max.x || pos.z < min.z || pos.z > max.z) {
-    if (pos.y < min.y || pos.y > max.y) {
+    /*if (pos.y < min.y || pos.y > max.y) {
         randomInit(min, max);
-    }
+    }*/
     // Between -0.002 and 0.002
     pos.x += randomFloat(-0.002, 0.002);
 }
