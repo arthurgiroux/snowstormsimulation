@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 10000;
+#define MAX_PARTICLES 1000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -41,6 +41,8 @@ protected:
     void draw_object(Shader& sh, Mesh3D& mesh);
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
     
+    void draw_cone();
+    
     void moveCamera();
         
     //init particles
@@ -60,6 +62,7 @@ protected:
 	// mesh shader
 	Shader m_meshShaderDiffuse;
 	Shader m_meshShaderParticle;
+    Shader m_meshShaderProj;
 	
 	//timer
 	StopWatch watch;

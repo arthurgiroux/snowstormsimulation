@@ -36,6 +36,7 @@ init()
 	// load mesh shader
     m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
     m_meshShaderParticle.create("particle.vs", "particle.fs");
+    m_meshShaderProj.create("proj.vs", "proj.fs");
 	//m_meshShaderTexture.create("tex.vs","tex.fs");
     
     m_light.translateWorld(Vector3(-3, 5, -10));
@@ -242,6 +243,7 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
+    draw_cone();
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
@@ -323,6 +325,23 @@ void SnowStormSimulation::draw_cube(Vector3 topfrontleft, Vector3 topfrontright,
     glVertex3d(bottombackright.x, bottombackright.y, bottombackright.z);
     
     glEnd();
+}
+
+void SnowStormSimulation::draw_cone()
+{
+    Object3D* tmp = new Object3D();
+    tmp->translateWorld(Vector3(0, 1, 0));
+    tmp->rotateObject(Vector3(1, 0, 0), -M_PI/2.0);
+    m_meshShaderProj.bind();
+    m_meshShaderProj.setMatrix4x4Uniform("modelworld", tmp->getTransformation());
+    m_meshShaderProj.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+    m_meshShaderProj.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    GLUquadric* params = gluNewQuadric();
+    gluQuadricDrawStyle(params,GLU_LINE);
+    gluCylinder(params, 0, 1, 2, 20, 1);
+    m_meshShaderProj.unbind();
+    delete tmp;
+
 }
 
 void SnowStormSimulation::load_mesh(const std::string& filenameObj) {

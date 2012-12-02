@@ -10,6 +10,7 @@
 
 
 Snowflake::Snowflake(Vector3 initialPos){
+    cone = Cone::Cone(Vector3(0,0,0), 0.5,0.5 , Vector3(0,1,0));
     pos = initialPos;
 }
 
@@ -38,6 +39,33 @@ void Snowflake::randomInit(Vector3 min, Vector3 max) {
     velocity = Vector3(randomFloat(-0.005, 0.005), randomFloat(-0.005, 0), randomFloat(-0.005, 0.005));
 }
 
+Vector3 Snowflake::computeAccelerationDueToCone(Cone cone){
+    double openingAngle = atan(cone.radius / cone.height);
+    //compute the vector between the origin of the cone (the pic) and the snowflake
+    Vector3 originToFlake = pos - cone.pos;
+    
+    //compute angle between direction of cone and originToFlake vector
+    double flakeAngle = atan2(cone.direction.cross(originToFlake).length(), cone.direction.dot(originToFlake));
+    
+    //if the angle is smaller than the opening angle,
+    bool flakeIsInCone = (flakeAngle <= openingAngle);
+    
+    
+    
+    if(flakeIsInCone)
+    {
+        //give a test acceleration (normally, should compute the tangent direction, and give an acceleration relative to the distance from the axis
+        Vector3 acceleration = Vector3(100, 100, 100);
+        return acceleration;
+    }
+    //if the flake is not in the cone, no special acceleration added
+    
+    return Vector3(0,0,0);
+    
+    
+    
+}
+
 void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
     if (!hasBeenInit) {
         randomInit(min, max);
@@ -46,6 +74,10 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
     // Make the snow fall in world
     pos += velocity;
     pos += force;
+    
+    //@arthur : c'est comme çA qu'on fait? j'ai ajouté l'acceleration directement, comme j'ai vu que t'avais fait la même chose
+    pos += computeAccelerationDueToCone(cone);
+    
     if (pos.x < min.x) {
         pos.x = max.x;
     }
