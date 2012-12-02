@@ -10,6 +10,7 @@
 #define __ICGProject__Snowflake__
 
 #include <iostream>
+#include <vector>
 #include "../math/Vector3.h"
 #include "../math/Matrix4.h"
 #include "../src/Cone.h"
@@ -29,11 +30,11 @@ public:
     
     Snowflake(Vector3 initialPos);
     Snowflake();
+    ~Snowflake();
     
-    Cone cone;
     
-    void updatePosition(Vector3 force, Vector3 min, Vector3 max);
-    Vector3 computeAccelerationDueToCone(Cone cone);
+    void updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vector<Cone*> storms);
+    Vector3 computeAccelerationDueToCone(const Cone* cone);
     
     
 private:

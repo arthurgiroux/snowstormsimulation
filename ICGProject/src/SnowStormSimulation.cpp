@@ -15,6 +15,16 @@ SnowStormSimulation(const char* _title, int _width, int _height)
 }
 
 
+SnowStormSimulation::~SnowStormSimulation()
+{
+    for(std::vector<Cone*>::iterator it = storms.begin(); it != storms.end(); ++it) {
+        delete * it;
+    }
+    
+    for(std::vector<Snowflake*>::iterator it = particles.begin(); it != particles.end(); ++it) {
+        delete * it;
+    }
+}
 //-----------------------------------------------------------------------------
 
 
@@ -50,7 +60,10 @@ init()
     //init particle table
     init_particles();
     
-    glEnable(GL_DEPTH_TEST);   
+    storms.push_back(new Cone(Vector3(0, 0, 0), 1, 2, Vector3(0, 1, 0)));
+    storms.push_back(new Cone(Vector3(2, 1, 0), 3, 5, Vector3(0, 1, 0)));
+    
+    glEnable(GL_DEPTH_TEST);
     
 }
 
@@ -243,7 +256,8 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
-    draw_cone();
+    
+    draw_storms();
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
@@ -271,7 +285,6 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
 	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
     m_meshShaderParticle.setVector4Uniform("cameraorigin", m_camera.origin().x, m_camera.origin().y, m_camera.origin().z, 0);
-    cout << m_camera.origin().x << " " << m_camera.origin().y << " " << m_camera.origin().z << endl;
     glEnable(GL_POINT_SPRITE);
     glEnable(GL_POINT_SMOOTH);
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -283,7 +296,7 @@ draw_scene(DrawMode _draw_mode)
         Snowflake* flake = particles[i];
         //m_meshShaderParticle.setVector3Attribute("velocity", flake->velocity.x, flake->velocity.y, flake->velocity.z);
         //m_meshShaderParticle.setVector3Attribute("force", 0, -0.009f, 0);
-        flake->updatePosition(Vector3(0, -0.009f, 0), minPos, maxPos);
+        flake->updatePosition(Vector3(0, -0.009f, 0), minPos, maxPos, storms);
         //m_meshShaderParticle.setVector3Attribute("initPos", flake->x, flake->y, flake->z);
         //cout << fabs(flake->pos.z - m_camera.origin().z) << endl;
         glVertex3d(flake->pos.x, flake->pos.y, flake->pos.z);
@@ -327,20 +340,22 @@ void SnowStormSimulation::draw_cube(Vector3 topfrontleft, Vector3 topfrontright,
     glEnd();
 }
 
-void SnowStormSimulation::draw_cone()
+void SnowStormSimulation::draw_storms()
 {
-    Object3D* tmp = new Object3D();
-    tmp->translateWorld(Vector3(0, 1, 0));
-    tmp->rotateObject(Vector3(1, 0, 0), -M_PI/2.0);
-    m_meshShaderProj.bind();
-    m_meshShaderProj.setMatrix4x4Uniform("modelworld", tmp->getTransformation());
-    m_meshShaderProj.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
-    m_meshShaderProj.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
-    GLUquadric* params = gluNewQuadric();
-    gluQuadricDrawStyle(params,GLU_LINE);
-    gluCylinder(params, 0, 1, 2, 20, 1);
-    m_meshShaderProj.unbind();
-    delete tmp;
+    for (unsigned int i = 0; i < storms.size(); ++i) {
+        Object3D* tmp = new Object3D();
+        tmp->translateWorld(storms[i]->pos);
+        tmp->rotateObject(Vector3(1, 0, 0), -M_PI/2.0);
+        m_meshShaderProj.bind();
+        m_meshShaderProj.setMatrix4x4Uniform("modelworld", tmp->getTransformation());
+        m_meshShaderProj.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+        m_meshShaderProj.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+        GLUquadric* params = gluNewQuadric();
+        gluQuadricDrawStyle(params,GLU_LINE);
+        gluCylinder(params, 0, storms[i]->radius, storms[i]->height, 20, 1);
+        m_meshShaderProj.unbind();
+        delete tmp;
+    }
 
 }
 
@@ -383,7 +398,7 @@ void SnowStormSimulation::draw_object(Shader& sh, Mesh3D& mesh)
 void SnowStormSimulation::init_particles()
 {
     double max = MAX_PARTICLES;
-    for(unsigned int j = 0; j < max; j++)
+    for (unsigned int j = 0; j < max; j++)
     {
         particles.push_back(new Snowflake());
     }

@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 10000;
+#define MAX_PARTICLES 1000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -20,7 +20,7 @@ class SnowStormSimulation : public TrackballViewer
 public:
     
 	SnowStormSimulation(const char* _title, int _width, int _height);
-    
+    ~SnowStormSimulation();
 	void load_mesh(const std::string& filenameObj);
 	
     
@@ -41,7 +41,7 @@ protected:
     void draw_object(Shader& sh, Mesh3D& mesh);
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
     
-    void draw_cone();
+    void draw_storms();
     
     void moveCamera();
         
@@ -75,6 +75,8 @@ protected:
     float secondsElapsed;
     
     std::vector<Snowflake*> particles;
+    
+    std::vector<Cone*> storms;
     
     float walkingSpeed = 0.1;
     

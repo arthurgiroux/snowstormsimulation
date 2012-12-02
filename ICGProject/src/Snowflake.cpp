@@ -10,12 +10,16 @@
 
 
 Snowflake::Snowflake(Vector3 initialPos){
-    cone = Cone::Cone(Vector3(0,0,0), 1, 2 , Vector3(0,1,0));
     pos = initialPos;
 }
 
 Snowflake::Snowflake() {
     hasBeenInit = false;
+}
+
+Snowflake::~Snowflake()
+{
+    
 }
 
 float Snowflake::randomFloat(float a, float b) {
@@ -39,16 +43,16 @@ void Snowflake::randomInit(Vector3 min, Vector3 max) {
     velocity = Vector3(randomFloat(-0.005, 0.005), randomFloat(-0.005, 0), randomFloat(-0.005, 0.005));
 }
 
-Vector3 Snowflake::computeAccelerationDueToCone(Cone cone){
-    double openingAngle = atan((float)cone.radius / cone.height);
+Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
+    double openingAngle = atan((float)cone->radius / cone->height);
     //compute the vector between the origin of the cone (the pic) and the snowflake
-    Vector3 originToFlake = pos - cone.pos;
+    Vector3 originToFlake = pos - cone->pos;
     
     //compute angle between direction of cone and originToFlake vector
-    double flakeAngle = atan2(cone.direction.cross(originToFlake).length(), cone.direction.dot(originToFlake));
+    double flakeAngle = atan2(cone->direction.cross(originToFlake).length(), cone->direction.dot(originToFlake));
     
     //if the angle is smaller than the opening angle,
-    bool flakeIsInCone = (flakeAngle <= openingAngle);
+    bool flakeIsInCone = (flakeAngle <= openingAngle && pos.y <= (cone->pos.y + cone->height));
     
     
     
@@ -67,7 +71,7 @@ Vector3 Snowflake::computeAccelerationDueToCone(Cone cone){
     
 }
 
-void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
+void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vector<Cone*> storms){
     if (!hasBeenInit) {
         randomInit(min, max);
         hasBeenInit = true;
@@ -79,12 +83,13 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
     //@arthur : c'est comme çA qu'on fait? j'ai ajouté l'acceleration directement, comme j'ai vu que t'avais fait la même chose
    // pos += computeAccelerationDueToCone(cone);
     
-    
-    Vector3 acc = computeAccelerationDueToCone(cone);
-    if(acc.x > 0 || acc.y >0 || acc.z > 0)
-    {
-        pos -= velocity;
-        pos -= force;
+    for (unsigned int i = 0; i < storms.size(); ++i) {
+        Vector3 acc = computeAccelerationDueToCone(storms[i]);
+        if(acc.x > 0 || acc.y >0 || acc.z > 0)
+        {
+            pos -= velocity;
+            pos -= force;
+        }
     }
     
     if (pos.x < min.x) {
@@ -101,9 +106,9 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max){
         pos.z = min.z;
     }
     //if (pos.y < min.y || pos.y > max.y || pos.x < min.x || pos.x > max.x || pos.z < min.z || pos.z > max.z) {
-    /*if (pos.y < min.y || pos.y > max.y) {
+    if (pos.y < min.y || pos.y > max.y) {
         randomInit(min, max);
-    }*/
+    }
     // Between -0.002 and 0.002
     pos.x += randomFloat(-0.002, 0.002);
 }

@@ -20,4 +20,8 @@ Cone::Cone(){
     
 }
 
+Cone::~Cone() {
+    
+}
+
 

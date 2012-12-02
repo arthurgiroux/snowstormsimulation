@@ -25,6 +25,7 @@ public:
     
     Cone(Vector3 initalPos, double radius, double height, Vector3 direction);
     Cone();
+    ~Cone();
     
     
     
