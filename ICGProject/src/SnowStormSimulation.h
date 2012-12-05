@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 10000;
+#define MAX_PARTICLES 50000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -86,6 +86,8 @@ protected:
     int time;
     int timebase=0;
     float fps = 0;
+    
+    bool cageMode = false;
     
 };
 

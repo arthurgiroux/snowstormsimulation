@@ -63,9 +63,18 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     {
         //fprintf(stderr, "flake \n");
         //give a test acceleration (normally, should compute the tangent direction, and give an acceleration relative to the distance from the axis
-        Vector3 acceleration = Vector3(20, 0, 0);
+      //  Vector3 coneDirection = cone->direction;
+       // Vector3 heightVector = cone->height * coneDirection.normalize();
+
+        Vector3 flakeToAxis =   Vector3(cone->pos.x, pos.y, cone->pos.z)- pos;
+    
+        Vector3 acceleration =  originToFlake.cross(flakeToAxis).normalize();
+        
+        return acceleration * 0.2 * flakeToAxis.length();
+        
         return acceleration;
     }
+    
     //if the flake is not in the cone, no special acceleration added
     
     return Vector3(0,0,0);
@@ -78,17 +87,16 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vec
     if (!hasBeenInit) {
         randomInit(min, max);
         hasBeenInit = true;
+        
     }
     // Make the snow fall in world
     pos += velocity;
     pos += force;
     
-    //@arthur : c'est comme çA qu'on fait? j'ai ajouté l'acceleration directement, comme j'ai vu que t'avais fait la même chose
-   // pos += computeAccelerationDueToCone(cone);
+    
     
     for (unsigned int i = 0; i < storms.size(); ++i) {
-        Vector3 acc = computeAccelerationDueToCone(storms[i]);
-        pos += acc;
+        pos += computeAccelerationDueToCone(storms[i]);
     }
     
     if (pos.x < min.x) {

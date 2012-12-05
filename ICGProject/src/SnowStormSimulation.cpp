@@ -62,12 +62,12 @@ init()
     //init particle table
     init_particles();
     
-    storms.push_back(new Cone(Vector3(0, 0, 0), 1, 2, Vector3(0, 1, 0)));
-    storms.push_back(new Cone(Vector3(2, 1, 0), 3, 5, Vector3(0, 1, 0)));
+    storms.push_back(new Cone(Vector3(0, 0, 0), 0.5, 2, Vector3(0, 1, 0)));
+    //storms.push_back(new Cone(Vector3(2, 1, 0), 3, 5, Vector3(0, 1, 0)));
     
     texture_snowflake = new Texture();
-    texture_snowflake->create("../data/cage.tga");
-    //texture_snowflake->create("../data/snowflakereal.tga");
+    //texture_snowflake->create("../data/cage.tga");
+    texture_snowflake->create("../data/snowflakereal.tga");
     
     glEnable(GL_DEPTH_TEST);
 }
@@ -102,6 +102,14 @@ keyboard(int key, int x, int y)
         case 'f':
             cout << "fps " << fps << endl;
 			break;
+        case 'c':
+            if (cageMode) {
+                texture_snowflake->create("../data/snowflakereal.tga");
+            }
+            else {
+                texture_snowflake->create("../data/cage.tga");
+            }
+            cageMode = !cageMode;
 		default:
 			TrackballViewer::special(key, x, y);
 			break;
@@ -262,7 +270,7 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
     
-    draw_storms();
+    //draw_storms();
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
@@ -311,17 +319,29 @@ draw_scene(DrawMode _draw_mode)
         //cout << fabs(flake->pos.z - m_camera.origin().z) << endl;
         //int randtexture = 0;
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 1);
-        //glTexCoord2f((flake->texture % 4) * 0.25, 1.0 - (flake->texture / 4) * 0.25);
+        if (cageMode) {
+            glTexCoord2f(0, 1);
+        } else {
+            glTexCoord2f((flake->texture % 4) * 0.25, 1.0 - (flake->texture / 4) * 0.25);
+        }
         glVertex3f(flake->pos.x - flake->size, flake->pos.y + flake->size, flake->pos.z);
-        glTexCoord2f(0, 0);
-        //glTexCoord2f((flake->texture % 4) * 0.25,  0.75 - (flake->texture / 4) * 0.25);
+        if (cageMode) {
+            glTexCoord2f(0, 0);
+        } else {
+            glTexCoord2f((flake->texture % 4) * 0.25,  0.75 - (flake->texture / 4) * 0.25);
+        }
         glVertex3f(flake->pos.x - flake->size, flake->pos.y - flake->size, flake->pos.z);
-        glTexCoord2f(1, 0);
-        //glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 0.75 - (flake->texture / 4) * 0.25);
+        if (cageMode) {
+            glTexCoord2f(1, 0);
+        } else {
+            glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 0.75 - (flake->texture / 4) * 0.25);
+        }
         glVertex3f(flake->pos.x + flake->size, flake->pos.y - flake->size, flake->pos.z);
-        glTexCoord2f(1, 1);
-        //glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 1.0 - (flake->texture / 4) * 0.25);
+        if (cageMode) {
+            glTexCoord2f(1, 1);
+        } else {
+            glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 1.0 - (flake->texture / 4) * 0.25);
+        }
         glVertex3f(flake->pos.x + flake->size, flake->pos.y + flake->size, flake->pos.z);
         glEnd();
     }
