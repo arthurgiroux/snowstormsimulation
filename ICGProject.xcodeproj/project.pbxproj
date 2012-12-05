@@ -76,6 +76,7 @@
 		8E8C4B9516512852000BA3BD /* tex.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tex.vs; sourceTree = "<group>"; };
 		8E8C4BA016512963000BA3BD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8E8C4BA216512968000BA3BD /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		8EEBAEDC166C13F00016C83F /* snowflake.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = snowflake.tga; path = ../../../snowflake.tga; sourceTree = "<group>"; };
 		8EF94678165C3278008E197D /* particle.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = particle.fs; sourceTree = "<group>"; };
 		8EF9467A165C3281008E197D /* particle.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = particle.vs; sourceTree = "<group>"; };
 		A7198512166765BF00B98C80 /* Cone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cone.cpp; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 		8E85C90E1651346500EF9498 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				8EEBAEDC166C13F00016C83F /* snowflake.tga */,
 			);
 			name = data;
 			sourceTree = "<group>";

@@ -26,6 +26,8 @@ public:
     
     Vector3 acceleration;
     Vector3 velocity;
+    float size;
+    int texture;
     
     
     Snowflake(Vector3 initialPos);
@@ -41,7 +43,7 @@ private:
     bool hasBeenInit;
     void randomInit(Vector3 min, Vector3 max);
     float randomFloat(float a, float b);
-};
+    };
 
 
 

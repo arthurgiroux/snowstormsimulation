@@ -15,7 +15,6 @@ void main()
 	
 	vec3 vertex = vec3( worldcamera * modelworld * gl_Vertex );
 	
-	//Exercise 4.4: Calculate direct and indirect light directions
     lightDir = (lightposition - vertex);
 
 }

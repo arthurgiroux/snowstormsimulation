@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 1000;
+#define MAX_PARTICLES 10000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -79,6 +79,8 @@ protected:
     std::vector<Cone*> storms;
     
     float walkingSpeed = 0.1;
+    
+    Texture* texture_snowflake;
     
     int frame=0;
     int time;

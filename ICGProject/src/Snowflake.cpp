@@ -14,7 +14,10 @@ Snowflake::Snowflake(Vector3 initialPos){
 }
 
 Snowflake::Snowflake() {
+    size = randomFloat(0.005, 0.01);
     hasBeenInit = false;
+    texture = rand() % 16;
+
 }
 
 Snowflake::~Snowflake()
@@ -60,7 +63,7 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     {
         //fprintf(stderr, "flake \n");
         //give a test acceleration (normally, should compute the tangent direction, and give an acceleration relative to the distance from the axis
-        Vector3 acceleration = Vector3(1000, 1000, 1000);
+        Vector3 acceleration = Vector3(20, 0, 0);
         return acceleration;
     }
     //if the flake is not in the cone, no special acceleration added
@@ -85,11 +88,7 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vec
     
     for (unsigned int i = 0; i < storms.size(); ++i) {
         Vector3 acc = computeAccelerationDueToCone(storms[i]);
-        if(acc.x > 0 || acc.y >0 || acc.z > 0)
-        {
-            pos -= velocity;
-            pos -= force;
-        }
+        pos += acc;
     }
     
     if (pos.x < min.x) {
@@ -111,4 +110,5 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vec
     }
     // Between -0.002 and 0.002
     pos.x += randomFloat(-0.002, 0.002);
+    
 }

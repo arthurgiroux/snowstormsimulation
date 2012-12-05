@@ -32,7 +32,7 @@ GlutViewer(const char* _title, int _width, int _height)
   : width_(_width), height_(_height), draw_mode_(SOLID_SMOOTH), fullscreen_(false) 
 {
   // create window
-  glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_ALPHA | GLUT_MULTISAMPLE );
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE | GLUT_ALPHA | GLUT_MULTISAMPLE );
   glutInitDisplayString("rgb double alpha depth>=16 samples>=16");
   glutInitWindowSize(_width, _height);
 

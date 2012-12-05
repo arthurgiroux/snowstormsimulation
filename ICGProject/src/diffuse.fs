@@ -2,10 +2,11 @@ varying vec3 normal, lightDir;
 
 uniform vec3 diffuseColor;
 uniform vec3 lightcolor;
+uniform sampler2D texture;
 		
 void main()
 {	
-	vec4 finalcolor = vec4(0.0);
+	vec4 finalcolor = texture2D(texture, gl_TexCoord[0].xy);
     
     vec3 N = normalize(normal);
     vec3 Ldir = normalize(lightDir);

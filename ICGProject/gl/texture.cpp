@@ -1,8 +1,8 @@
 //=============================================================================
-//                                                                            
+//
 //   Exercise code for Introduction to Computer Graphics
 //   LGG - EPFL
-//                                                                            
+//
 //=============================================================================
 //=============================================================================
 //
@@ -17,9 +17,9 @@ Texture::Texture() : id_(0), layer_(0), width_(0), height_(0)
 {
 }
 ///////////////////////////////////////////////////////////////////////////
-Texture::Texture(unsigned int _width, 
-				 unsigned int _height, 
-				 unsigned int _internalFormat, 
+Texture::Texture(unsigned int _width,
+				 unsigned int _height,
+				 unsigned int _internalFormat,
 				 unsigned int _format,
 				 unsigned int _type) : id_(0), layer_(0), width_(0), height_(0)
 {
@@ -31,9 +31,9 @@ Texture::~Texture()
 	clear();
 }
 ///////////////////////////////////////////////////////////////////////////
-void Texture::create(unsigned int _width, 
-					 unsigned int _height, 
-					 unsigned int _internalFormat, 
+void Texture::create(unsigned int _width,
+					 unsigned int _height,
+					 unsigned int _internalFormat,
 					 unsigned int _format,
 					 unsigned int _type,
 					 void * _data,
@@ -51,7 +51,7 @@ void Texture::create(unsigned int _width,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _param);
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glBindTexture(GL_TEXTURE_2D, 0); 
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 ///////////////////////////////////////////////////////////////////////////
 #pragma pack(push, 1)
@@ -60,18 +60,18 @@ typedef struct
 	unsigned char  identsize;          // size of ID field that follows 18 byte header (0 usually)
 	unsigned char  colourmaptype;      // type of colour map 0=none, 1=has palette
 	unsigned char  imagetype;          // type of image 0=none,1=indexed,2=rgb,3=grey,+8=rle packed
-
+    
 	short colourmapstart;			   // first colour map entry in palette
 	short colourmaplength;			   // number of colours in palette
 	unsigned char  colourmapbits;      // number of bits per palette entry 15,16,24,32
-
+    
 	short xstart;             // image x origin
 	short ystart;             // image y origin
 	short width;              // image width in pixels
 	short height;             // image height in pixels
 	unsigned char  bits;               // image bits per pixel 8,16,24,32
 	unsigned char  descriptor;         // image descriptor bits (vh flip bits)
-
+    
 	// pixel data follows header
 } TGA_HEADER;
 #pragma pack(pop)
@@ -83,16 +83,16 @@ void Texture::create(const std::string& _fileName)
 	if(!stream.is_open()) return;
 	TGA_HEADER header;
 	stream.read((char *)(&header), sizeof(TGA_HEADER));
-	assert(header.width <= 4096 && header.height <= 4096 && header.imagetype == 2 && header.bits == 24);
+	assert(header.width <= 4096 && header.height <= 4096 && header.imagetype == 2 && header.bits == 32);
 	clear();
 	width_ = header.width;
 	height_ = header.height;
 	unsigned int sizeImg = width_*height_;
-	char *data = new char[sizeImg*3];
-	stream.read(data, sizeImg*3);
+	char *data = new char[sizeImg*4];
+	stream.read(data, sizeImg*4);
 	for(unsigned int i = 0; i < sizeImg; i++)
 	{
-		unsigned pos = i*3;
+		unsigned pos = i*4;
 		unsigned char red = data[pos];
 		data[pos] = data[pos + 2];
 		data[pos + 2] = red;
@@ -100,13 +100,13 @@ void Texture::create(const std::string& _fileName)
 	glGenTextures(1, &id_);
 	assert(id_ != 0);
 	glBindTexture(GL_TEXTURE_2D, id_);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_, height_, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmapEXT(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glBindTexture(GL_TEXTURE_2D, 0); 
+	glBindTexture(GL_TEXTURE_2D, 0);
 	stream.close();
 	delete [] data;
 }
@@ -145,22 +145,22 @@ void Texture::write(const std::string& _fileName) const
 	stream.write(data, sizeImg*3);
 	stream.close();
 	delete [] data;
-	glBindTexture(GL_TEXTURE_2D, 0); 
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 ///////////////////////////////////////////////////////////////////////////
 void Texture::bind() const
 {
 	assert(id_ != 0);
-	glEnable(GL_TEXTURE_2D); 
-	glActiveTextureARB(GL_TEXTURE0_ARB+layer_); 
+	glEnable(GL_TEXTURE_2D);
+	glActiveTextureARB(GL_TEXTURE0_ARB+layer_);
 	glBindTexture(GL_TEXTURE_2D, id_);
 }
 ///////////////////////////////////////////////////////////////////////////
 void Texture::unbind() const
 {
 	assert(id_ != 0);
-	glActiveTextureARB(GL_TEXTURE0_ARB+layer_); 
-	glBindTexture(GL_TEXTURE_2D, 0); 
+	glActiveTextureARB(GL_TEXTURE0_ARB+layer_);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 }
 ///////////////////////////////////////////////////////////////////////////
