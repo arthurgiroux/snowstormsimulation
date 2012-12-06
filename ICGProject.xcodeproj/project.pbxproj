@@ -72,8 +72,6 @@
 		8E8C4B9116512852000BA3BD /* proj.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = proj.vs; sourceTree = "<group>"; };
 		8E8C4B9216512852000BA3BD /* SolarViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SolarViewer.cpp; sourceTree = "<group>"; };
 		8E8C4B9316512852000BA3BD /* SolarViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SolarViewer.h; sourceTree = "<group>"; };
-		8E8C4B9416512852000BA3BD /* tex.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tex.fs; sourceTree = "<group>"; };
-		8E8C4B9516512852000BA3BD /* tex.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tex.vs; sourceTree = "<group>"; };
 		8E8C4BA016512963000BA3BD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8E8C4BA216512968000BA3BD /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		8EEBAEDC166C13F00016C83F /* snowflake.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = snowflake.tga; path = ../../../snowflake.tga; sourceTree = "<group>"; };
@@ -187,8 +185,6 @@
 				8E8C4B8E16512852000BA3BD /* diffuse.vs */,
 				8E8C4B9016512852000BA3BD /* proj.fs */,
 				8E8C4B9116512852000BA3BD /* proj.vs */,
-				8E8C4B9416512852000BA3BD /* tex.fs */,
-				8E8C4B9516512852000BA3BD /* tex.vs */,
 				8E54AC03165137FE00A0CAA4 /* SnowStormSimulation.h */,
 				8E54AC041651380800A0CAA4 /* SnowStormSimulation.cpp */,
 				8E8C4B8F16512852000BA3BD /* main.cpp */,

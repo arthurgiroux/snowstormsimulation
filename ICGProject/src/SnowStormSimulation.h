@@ -72,7 +72,7 @@ protected:
 	float totalDaysElapsed;
 	float currentTime;
     
-    float secondsElapsed;
+    float deltaTime;
     
     std::vector<Snowflake*> particles;
     
@@ -88,6 +88,8 @@ protected:
     float fps = 0;
     
     bool cageMode = false;
+    bool drawStorms = false;
+    bool initPart = false;
     
 };
 

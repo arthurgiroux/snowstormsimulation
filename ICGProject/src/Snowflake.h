@@ -30,12 +30,11 @@ public:
     int texture;
     
     
-    Snowflake(Vector3 initialPos);
     Snowflake();
     ~Snowflake();
     
     
-    void updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vector<Cone*> storms);
+    void updatePosition(float deltaT, Vector3 min, Vector3 max, std::vector<Cone*> storms);
     Vector3 computeAccelerationDueToCone(const Cone* cone);
     
     
@@ -43,7 +42,9 @@ private:
     bool hasBeenInit;
     void randomInit(Vector3 min, Vector3 max);
     float randomFloat(float a, float b);
-    };
+    
+    
+};
 
 
 

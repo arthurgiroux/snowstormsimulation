@@ -49,14 +49,13 @@ init()
     m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
     m_meshShaderParticle.create("particle.vs", "particle.fs");
     m_meshShaderProj.create("proj.vs", "proj.fs");
-	//m_meshShaderTexture.create("tex.vs","tex.fs");
     
     m_light.translateWorld(Vector3(-3, 5, -10));
     m_Scene.translateWorld(Vector3(1.0, 0.0, 0.0));
     
 	currentTime = 0.0;
     
-    secondsElapsed = 0.0;
+    deltaTime = 0.0;
 	isWatchOn = false;
     
     //init particle table
@@ -86,6 +85,9 @@ keyboard(int key, int x, int y)
 			printf("'h'\t-\thelp\n");
 			printf("'arrow keys\t-\tchange speed of rotation\n");
 			break;
+        case 's':
+            drawStorms = !drawStorms;
+            break;
 		case ' ':
 			if(isWatchOn)
 			{
@@ -110,6 +112,16 @@ keyboard(int key, int x, int y)
                 texture_snowflake->create("../data/cage.tga");
             }
             cageMode = !cageMode;
+            break;
+        case 'p':
+            if (cageMode) {
+                texture_snowflake->create("../data/snowflakereal.tga");
+            }
+            else {
+                texture_snowflake->create("../data/pauly.tga");
+            }
+            cageMode = !cageMode;
+            break;
 		default:
 			TrackballViewer::special(key, x, y);
 			break;
@@ -157,7 +169,7 @@ void SnowStormSimulation::idle()
 	{
 		float prevTime = currentTime;
 		currentTime = watch.stop();
-		secondsElapsed =  (currentTime-prevTime) / 1000.0;		
+		deltaTime =  currentTime-prevTime;
 		glutPostRedisplay();
 	}
     frame++;
@@ -182,9 +194,7 @@ draw_scene(DrawMode _draw_mode)
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
-	//glDisable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
-
 	
 	m_meshShaderDiffuse.bind();
 	
@@ -198,7 +208,7 @@ draw_scene(DrawMode _draw_mode)
 	m_meshShaderDiffuse.setMatrix3x3Uniform("worldcameraNormal", m_camera.getTransformation().Transpose());
     m_meshShaderDiffuse.setMatrix3x3Uniform("modelworldNormal", m_Scene.getTransformation().Inverse().Transpose());
     m_Scene.getMaterial(0).m_diffuseTexture.bind();
-	m_meshShaderDiffuse.setIntUniform("texture", m_Scene.getMaterial(0).m_diffuseTexture.getLayer());
+    m_meshShaderDiffuse.setIntUniform("texture", m_Scene.getMaterial(0).m_diffuseTexture.getLayer());
 	m_meshShaderDiffuse.setVector3Uniform("lightposition", lightPosInCamera.x, lightPosInCamera.y, lightPosInCamera.z );
 	m_meshShaderDiffuse.setVector3Uniform("diffuseColor", 0.5, 0.5, 0.5);
     m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.85, 0.85, 0.85);
@@ -208,7 +218,6 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderDiffuse.unbind();
     
     
-    double max = MAX_PARTICLES;
     // Unit box in world coordinates
     Vector3 unitBox[8];
     int boxHeight = 5;
@@ -270,7 +279,10 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
     
-    //draw_storms();
+    if (drawStorms) {
+        draw_storms();
+    }
+    
     glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
@@ -297,6 +309,7 @@ draw_scene(DrawMode _draw_mode)
     //glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (initPart) {
     m_meshShaderParticle.bind();
     Object3D* billboard = new Object3D();
     billboard->rotateObject(Vector3(1, 0, 0), -m_camera.getAngleX());
@@ -304,20 +317,22 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderParticle.setMatrix4x4Uniform("billboard", billboard->getTransformation());
     m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
 	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    
     delete billboard;
     texture_snowflake->bind();
     m_meshShaderParticle.setIntUniform("texture",texture_snowflake->getLayer());
     
     
+    double max = MAX_PARTICLES;
     for (int i = 0; i < max; i++)
     {
         Snowflake* flake = particles[i];
-        //m_meshShaderParticle.setVector3Attribute("velocity", flake->velocity.x, flake->velocity.y, flake->velocity.z);
-        //m_meshShaderParticle.setVector3Attribute("force", 0, -0.009f, 0);
-        flake->updatePosition(Vector3(0, -0.009f, 0), minPos, maxPos, storms);
-        //m_meshShaderParticle.setVector3Attribute("initPos", flake->x, flake->y, flake->z);
-        //cout << fabs(flake->pos.z - m_camera.origin().z) << endl;
-        //int randtexture = 0;
+        if(isWatchOn)
+        {
+            flake->updatePosition(deltaTime, minPos, maxPos, storms);
+        }
+        m_meshShaderParticle.setVector3Attribute("pos", flake->pos.x, flake->pos.y, flake->pos.z);
+        //m_meshShaderParticle.setVector3Attribute("scaling", flake->pos.x, flake->pos.y, flake->pos.z);
         glBegin(GL_QUADS);
         if (cageMode) {
             glTexCoord2f(0, 1);
@@ -325,29 +340,34 @@ draw_scene(DrawMode _draw_mode)
             glTexCoord2f((flake->texture % 4) * 0.25, 1.0 - (flake->texture / 4) * 0.25);
         }
         glVertex3f(flake->pos.x - flake->size, flake->pos.y + flake->size, flake->pos.z);
+        //glVertex3f(-1 , 1, 0);
         if (cageMode) {
             glTexCoord2f(0, 0);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25,  0.75 - (flake->texture / 4) * 0.25);
         }
         glVertex3f(flake->pos.x - flake->size, flake->pos.y - flake->size, flake->pos.z);
+        //glVertex3f(-1, -1, 0);
         if (cageMode) {
             glTexCoord2f(1, 0);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 0.75 - (flake->texture / 4) * 0.25);
         }
         glVertex3f(flake->pos.x + flake->size, flake->pos.y - flake->size, flake->pos.z);
+        //glVertex3f(1, -1, 0);
         if (cageMode) {
             glTexCoord2f(1, 1);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 1.0 - (flake->texture / 4) * 0.25);
         }
         glVertex3f(flake->pos.x + flake->size, flake->pos.y + flake->size, flake->pos.z);
+        //glVertex3f(1, 1, 0);
         glEnd();
     }
     texture_snowflake->unbind();
     m_meshShaderParticle.unbind();
     glDisable(GL_BLEND);
+    }
     //glEnable(GL_DEPTH_TEST);
     glFinish();
 }
@@ -443,6 +463,7 @@ void SnowStormSimulation::draw_object(Shader& sh, Mesh3D& mesh)
 
 void SnowStormSimulation::init_particles()
 {
+    initPart = true;
     double max = MAX_PARTICLES;
     for (unsigned int j = 0; j < max; j++)
     {

@@ -9,15 +9,10 @@
 #include "Snowflake.h"
 
 
-Snowflake::Snowflake(Vector3 initialPos){
-    pos = initialPos;
-}
-
 Snowflake::Snowflake() {
     size = randomFloat(0.005, 0.01);
     hasBeenInit = false;
     texture = rand() % 16;
-
 }
 
 Snowflake::~Snowflake()
@@ -33,6 +28,7 @@ float Snowflake::randomFloat(float a, float b) {
 }
 
 void Snowflake::randomInit(Vector3 min, Vector3 max) {
+    acceleration = Vector3(0.0, -0.00000981f, 0.0);
     if (!hasBeenInit) {
         pos = Vector3(randomFloat(min.x, max.x),
                   randomFloat(min.y, max.y),
@@ -43,7 +39,7 @@ void Snowflake::randomInit(Vector3 min, Vector3 max) {
                       max.y,
                       randomFloat(min.z, max.z));
     }
-    velocity = Vector3(randomFloat(-0.005, 0.005), randomFloat(-0.005, 0), randomFloat(-0.005, 0.005));
+    velocity = Vector3(randomFloat(-0.0003, 0.0003), randomFloat(-0.0003, 0), randomFloat(-0.0003, 0.0003));
 }
 
 Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
@@ -66,13 +62,12 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
       //  Vector3 coneDirection = cone->direction;
        // Vector3 heightVector = cone->height * coneDirection.normalize();
 
-        Vector3 flakeToAxis =   Vector3(cone->pos.x, pos.y, cone->pos.z)- pos;
+        Vector3 flakeToAxis = Vector3(cone->pos.x, pos.y, cone->pos.z) - pos;
     
-        Vector3 acceleration =  originToFlake.cross(flakeToAxis).normalize();
-        
-        return acceleration * 0.2 * flakeToAxis.length();
-        
-        return acceleration;
+        Vector3 acc =  originToFlake.cross(flakeToAxis).normalize();
+                
+        return (acc + 0.3 * flakeToAxis) * 0.00002 * (cone->radius / flakeToAxis.length());
+
     }
     
     //if the flake is not in the cone, no special acceleration added
@@ -83,21 +78,23 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     
 }
 
-void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vector<Cone*> storms){
+void Snowflake::updatePosition(float deltaT, Vector3 min, Vector3 max, std::vector<Cone*> storms){
     if (!hasBeenInit) {
         randomInit(min, max);
         hasBeenInit = true;
         
     }
     // Make the snow fall in world
-    pos += velocity;
-    pos += force;
-    
-    
-    
+    //pos += velocity;
+    //pos += force;
+    acceleration = Vector3(0.0, -0.00000981f, 0.0);
     for (unsigned int i = 0; i < storms.size(); ++i) {
-        pos += computeAccelerationDueToCone(storms[i]);
+        acceleration += computeAccelerationDueToCone(storms[i]);
     }
+    
+    pos = pos + deltaT * velocity + 0.5 * acceleration * deltaT*deltaT;
+    
+
     
     if (pos.x < min.x) {
         pos.x = max.x;
@@ -117,6 +114,6 @@ void Snowflake::updatePosition(Vector3 force, Vector3 min, Vector3 max, std::vec
         randomInit(min, max);
     }
     // Between -0.002 and 0.002
-    pos.x += randomFloat(-0.002, 0.002);
+    //pos.x += randomFloat(-0.002, 0.002);
     
 }
