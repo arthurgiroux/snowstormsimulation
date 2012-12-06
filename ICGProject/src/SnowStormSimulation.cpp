@@ -313,7 +313,7 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderParticle.bind();
     Object3D* billboard = new Object3D();
     billboard->rotateObject(Vector3(1, 0, 0), -m_camera.getAngleX());
-    //billboard->rotateObject(Vector3(0, 1, 0), m_camera.getAngleY());
+    billboard->rotateObject(Vector3(0, 1, 0), -m_camera.getAngleY());
     m_meshShaderParticle.setMatrix4x4Uniform("billboard", billboard->getTransformation());
     m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
 	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
@@ -332,36 +332,35 @@ draw_scene(DrawMode _draw_mode)
             flake->updatePosition(deltaTime, minPos, maxPos, storms);
         }
         m_meshShaderParticle.setVector3Attribute("pos", flake->pos.x, flake->pos.y, flake->pos.z);
-        //m_meshShaderParticle.setVector3Attribute("scaling", flake->pos.x, flake->pos.y, flake->pos.z);
         glBegin(GL_QUADS);
         if (cageMode) {
             glTexCoord2f(0, 1);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25, 1.0 - (flake->texture / 4) * 0.25);
         }
-        glVertex3f(flake->pos.x - flake->size, flake->pos.y + flake->size, flake->pos.z);
-        //glVertex3f(-1 , 1, 0);
+        //glVertex3f(flake->pos.x - flake->size, flake->pos.y + flake->size, flake->pos.z);
+        glVertex3f(-flake->size, flake->size, 0);
         if (cageMode) {
             glTexCoord2f(0, 0);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25,  0.75 - (flake->texture / 4) * 0.25);
         }
-        glVertex3f(flake->pos.x - flake->size, flake->pos.y - flake->size, flake->pos.z);
-        //glVertex3f(-1, -1, 0);
+        //glVertex3f(flake->pos.x - flake->size, flake->pos.y - flake->size, flake->pos.z);
+        glVertex3f(-flake->size, -flake->size, 0);
         if (cageMode) {
             glTexCoord2f(1, 0);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 0.75 - (flake->texture / 4) * 0.25);
         }
-        glVertex3f(flake->pos.x + flake->size, flake->pos.y - flake->size, flake->pos.z);
-        //glVertex3f(1, -1, 0);
+        //glVertex3f(flake->pos.x + flake->size, flake->pos.y - flake->size, flake->pos.z);
+        glVertex3f(flake->size, -flake->size, 0);
         if (cageMode) {
             glTexCoord2f(1, 1);
         } else {
             glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 1.0 - (flake->texture / 4) * 0.25);
         }
-        glVertex3f(flake->pos.x + flake->size, flake->pos.y + flake->size, flake->pos.z);
-        //glVertex3f(1, 1, 0);
+        //glVertex3f(flake->pos.x + flake->size, flake->pos.y + flake->size, flake->pos.z);
+        glVertex3f(flake->size, flake->size, 0);
         glEnd();
     }
     texture_snowflake->unbind();
