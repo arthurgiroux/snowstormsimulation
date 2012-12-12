@@ -62,7 +62,7 @@ init()
     init_particles();
     
     storms.push_back(new Cone(Vector3(0, 0, 0), 0.5, 2, Vector3(0, 1, 0)));
-    //storms.push_back(new Cone(Vector3(2, 1, 0), 3, 5, Vector3(0, 1, 0)));
+    storms.push_back(new Cone(Vector3(2, 1, 0), 3, 5, Vector3(0, 1, 0)));
     
     texture_snowflake = new Texture();
     //texture_snowflake->create("../data/cage.tga");
