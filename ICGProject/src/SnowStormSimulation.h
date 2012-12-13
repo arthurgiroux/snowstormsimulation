@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 50000;
+#define MAX_PARTICLES 20000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -42,6 +42,9 @@ protected:
 	void draw_object(Shader& sh, Mesh3D& mesh, bool showTexture);
     
     void draw_storms();
+    void update_storms_positions(Vector3 minPos, Vector3 maxPos);
+    float randomFloat(float a, float b);
+
     
     void moveCamera();
         

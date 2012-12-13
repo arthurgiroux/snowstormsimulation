@@ -63,8 +63,6 @@ init()
     //init particle table
     init_particles();
     
-    storms.push_back(new Cone(Vector3(0, 0, 0), 0.5, 2, Vector3(0, 1, 0)));
-    storms.push_back(new Cone(Vector3(2, 1, 0), 3, 5, Vector3(0, 1, 0)));
     
     texture_snowflake = new Texture();
     //texture_snowflake->create("../data/cage.tga");
@@ -127,6 +125,14 @@ keyboard(int key, int x, int y)
                 ratio = 2.0;
                 texture_snowflake->create("../data/pauly.tga");
             }
+            break;
+            
+        case 'o':
+            storms.push_back(new Cone(Vector3(0, 0, 0), randomFloat(0,1), randomFloat(0,5), Vector3(0, 1, 0), Vector3(randomFloat(-0.001, 0.001),0,randomFloat(-0.001, 0.001)),Vector3(randomFloat(-0.0001, 0.0001), 0, randomFloat(-0.0001, 0.0001))));
+            break;
+            
+        case 'i':
+            storms.pop_back();
             break;
 		default:
 			TrackballViewer::special(key, x, y);
@@ -336,7 +342,12 @@ draw_scene(DrawMode _draw_mode)
         texture_snowflake->bind();
         m_meshShaderParticle.setIntUniform("texture",texture_snowflake->getLayer());
         
-        
+    
+        if(isWatchOn)
+        {
+            update_storms_positions(minPos, maxPos);
+        }
+    
         double max = MAX_PARTICLES;
         for (int i = 0; i < max; i++)
         {
@@ -434,6 +445,30 @@ void SnowStormSimulation::draw_storms()
 
 }
 
+float SnowStormSimulation::randomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
+
+
+void SnowStormSimulation::update_storms_positions(Vector3 minPos, Vector3 maxPos)
+{
+    
+
+    
+    for(unsigned int i = 0; i < storms.size(); ++i){
+        Cone *storm = storms[i];
+        storm->pos = storm->pos + deltaTime * storm->velocity + 0.5 * storm->acceleration * deltaTime*deltaTime;
+        if(storm->pos.x > maxPos.x || storm->pos.x < minPos.x ||
+           storm->pos.z > maxPos.z || storm->pos.z < minPos.z)
+        {
+            storm->pos = Vector3(randomFloat(minPos.x, maxPos.x),0, randomFloat(minPos.z, maxPos.z));
+        }
+
+    }
+}
 void SnowStormSimulation::load_mesh(const std::string& filenameObj) {
     Mesh3DReader::read( filenameObj, m_Scene);
     

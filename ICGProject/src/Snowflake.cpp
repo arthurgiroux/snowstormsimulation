@@ -65,8 +65,9 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
         Vector3 flakeToAxis = Vector3(cone->pos.x, pos.y, cone->pos.z) - pos;
     
         Vector3 acc =  originToFlake.cross(flakeToAxis).normalize();
-        
-        return (acc + 0.5*flakeToAxis.normalize() - 0.1*originToFlake.normalize()) * 0.000002;
+                
+        return (acc + 0.3 * flakeToAxis) * 0.02 * (cone->radius / flakeToAxis.length());
+
     }
     
     //if the flake is not in the cone, no special acceleration added
