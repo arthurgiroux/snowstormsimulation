@@ -55,7 +55,7 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     
     
     
-    if(flakeIsInCone)
+    if (flakeIsInCone)
     {
         //fprintf(stderr, "flake \n");
         //give a test acceleration (normally, should compute the tangent direction, and give an acceleration relative to the distance from the axis
@@ -73,8 +73,7 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     
     return Vector3(0,0,0);
     
-    
-    
+
 }
 
 void Snowflake::updatePosition(float deltaT, Vector3 min, Vector3 max, std::vector<Cone*> storms){

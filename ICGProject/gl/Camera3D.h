@@ -61,7 +61,7 @@ public: //------------------------------------------------ public methods
 	
 	//! set the size of the camera
 	void setSize( int width, int height )
-    { 
+    {
 		m_width = width;
 		m_height = height; 
 		updateProjectionMatrix();
@@ -148,7 +148,8 @@ protected:
 	void updateProjectionMatrix()
     {
 #ifndef STRIP_CODE
-		double far = getFarPlane();
+		//double far = getFarPlane();
+        double far = 50.0;
 		double near = getNearPlane();
         
 		double top, bottom, left, right;

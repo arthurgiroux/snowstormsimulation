@@ -49,12 +49,16 @@ protected:
 
     void init_particles();
     
+    Mesh3D* createCube();
+    
 protected:
 	
 	// mesh objects
 	//Mesh3D m_SnowFlake;
     
     Mesh3D m_Scene;
+    Mesh3D* m_Sky;
+
 	
 	// directional light
 	Light3D m_light;
@@ -85,9 +89,10 @@ protected:
     int frame=0;
     int time;
     int timebase=0;
+    float ratio = 1.0;
     float fps = 0;
     
-    bool cageMode = false;
+    bool altMode = false;
     bool drawStorms = false;
     bool initPart = false;
     

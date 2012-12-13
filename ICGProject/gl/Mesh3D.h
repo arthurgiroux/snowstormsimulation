@@ -247,6 +247,17 @@ public:
     {
         return &(m_vertexIndices[part])[0];
     }
+
+    // ---------------------------------------------------------------------------------
+    
+    
+    void scaleTextureCoord(int ratio) {
+        cout << m_vertexUV.size() << endl;
+        for (int i = 0; i < m_vertexUV.size(); ++i) {
+            m_vertexUV[i] = m_vertexUV[i] * ratio;
+        }
+    }
+    
     
     // ---------------------------------------------------------------------------------
     
@@ -257,6 +268,7 @@ public:
     
 	// calculate bounding box
 	void calculateBoundingBox( Vector3 & bbmin, Vector3 & bbmax );
+    
     
 	
 private:

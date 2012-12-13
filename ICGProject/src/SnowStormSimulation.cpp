@@ -53,6 +53,8 @@ init()
     m_light.translateWorld(Vector3(-3, 5, -10));
     m_Scene.translateWorld(Vector3(1.0, 0.0, 0.0));
     
+    m_Sky = createCube();
+    m_Sky->translateWorld(Vector3(0.0, 0.0, 0.0));
 	currentTime = 0.0;
     
     deltaTime = 0.0;
@@ -103,24 +105,28 @@ keyboard(int key, int x, int y)
 			break;
         case 'f':
             cout << "fps " << fps << endl;
-			break;
+			break;            
         case 'c':
-            if (cageMode) {
+            altMode = !altMode;
+            if (!altMode) {
+                ratio = 1.0;
                 texture_snowflake->create("../data/snowflakereal.tga");
             }
             else {
+                ratio = 2.0;
                 texture_snowflake->create("../data/cage.tga");
             }
-            cageMode = !cageMode;
             break;
         case 'p':
-            if (cageMode) {
+            altMode = !altMode;
+            if (!altMode) {
+                ratio = 1.0;
                 texture_snowflake->create("../data/snowflakereal.tga");
             }
             else {
+                ratio = 2.0;
                 texture_snowflake->create("../data/pauly.tga");
             }
-            cageMode = !cageMode;
             break;
 		default:
 			TrackballViewer::special(key, x, y);
@@ -191,10 +197,18 @@ draw_scene(DrawMode _draw_mode)
 	// clear screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     
 	glEnable(GL_MULTISAMPLE);
+    
+    
+    /*m_meshShaderProj.bind();
+    m_meshShaderProj.setMatrix4x4Uniform("modelworld", m_Sky->getTransformation());
+    m_meshShaderProj.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+    m_meshShaderProj.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    draw_object(m_meshShaderProj, *m_Sky);
+    m_meshShaderProj.unbind();*/
+     
 	
 	m_meshShaderDiffuse.bind();
 	
@@ -211,7 +225,7 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderDiffuse.setIntUniform("texture", m_Scene.getMaterial(0).m_diffuseTexture.getLayer());
 	m_meshShaderDiffuse.setVector3Uniform("lightposition", lightPosInCamera.x, lightPosInCamera.y, lightPosInCamera.z );
 	m_meshShaderDiffuse.setVector3Uniform("diffuseColor", 0.5, 0.5, 0.5);
-    m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.85, 0.85, 0.85);
+    m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.29, 0.28, 0.19);
 	
     draw_object(m_meshShaderDiffuse, m_Scene);
     
@@ -310,62 +324,58 @@ draw_scene(DrawMode _draw_mode)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if (initPart) {
-    m_meshShaderParticle.bind();
-    Object3D* billboard = new Object3D();
-    billboard->rotateObject(Vector3(1, 0, 0), -m_camera.getAngleX());
-    billboard->rotateObject(Vector3(0, 1, 0), -m_camera.getAngleY());
-    m_meshShaderParticle.setMatrix4x4Uniform("billboard", billboard->getTransformation());
-    m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
-	m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
-    
-    delete billboard;
-    texture_snowflake->bind();
-    m_meshShaderParticle.setIntUniform("texture",texture_snowflake->getLayer());
-    
-    
-    double max = MAX_PARTICLES;
-    for (int i = 0; i < max; i++)
-    {
-        Snowflake* flake = particles[i];
-        if(isWatchOn)
+        m_meshShaderParticle.bind();
+        Object3D* billboard = new Object3D();
+        billboard->rotateObject(Vector3(1, 0, 0), -m_camera.getAngleX());
+        billboard->rotateObject(Vector3(0, 1, 0), -m_camera.getAngleY());
+        m_meshShaderParticle.setMatrix4x4Uniform("billboard", billboard->getTransformation());
+        m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+        m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+        
+        delete billboard;
+        texture_snowflake->bind();
+        m_meshShaderParticle.setIntUniform("texture",texture_snowflake->getLayer());
+        
+        
+        double max = MAX_PARTICLES;
+        for (int i = 0; i < max; i++)
         {
-            flake->updatePosition(deltaTime, minPos, maxPos, storms);
+            Snowflake* flake = particles[i];
+            if(isWatchOn)
+            {
+                flake->updatePosition(deltaTime, minPos, maxPos, storms);
+            }
+            m_meshShaderParticle.setVector3Attribute("pos", flake->pos.x, flake->pos.y, flake->pos.z);
+            glBegin(GL_QUADS);
+            if (altMode) {
+                glTexCoord2f(0, 1);
+            } else {
+                glTexCoord2f((flake->texture % 4) * 0.25, 1.0 - (flake->texture / 4) * 0.25);
+            }
+            glVertex3f(-flake->size*ratio, flake->size*ratio, 0);
+            if (altMode) {
+                glTexCoord2f(0, 0);
+            } else {
+                glTexCoord2f((flake->texture % 4) * 0.25,  0.75 - (flake->texture / 4) * 0.25);
+            }
+            glVertex3f(-flake->size*ratio, -flake->size*ratio, 0);
+            if (altMode) {
+                glTexCoord2f(1, 0);
+            } else {
+                glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 0.75 - (flake->texture / 4) * 0.25);
+            }
+            glVertex3f(flake->size*ratio, -flake->size*ratio, 0);
+            if (altMode) {
+                glTexCoord2f(1, 1);
+            } else {
+                glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 1.0 - (flake->texture / 4) * 0.25);
+            }
+            glVertex3f(flake->size*ratio, flake->size*ratio, 0);
+            glEnd();
         }
-        m_meshShaderParticle.setVector3Attribute("pos", flake->pos.x, flake->pos.y, flake->pos.z);
-        glBegin(GL_QUADS);
-        if (cageMode) {
-            glTexCoord2f(0, 1);
-        } else {
-            glTexCoord2f((flake->texture % 4) * 0.25, 1.0 - (flake->texture / 4) * 0.25);
-        }
-        //glVertex3f(flake->pos.x - flake->size, flake->pos.y + flake->size, flake->pos.z);
-        glVertex3f(-flake->size, flake->size, 0);
-        if (cageMode) {
-            glTexCoord2f(0, 0);
-        } else {
-            glTexCoord2f((flake->texture % 4) * 0.25,  0.75 - (flake->texture / 4) * 0.25);
-        }
-        //glVertex3f(flake->pos.x - flake->size, flake->pos.y - flake->size, flake->pos.z);
-        glVertex3f(-flake->size, -flake->size, 0);
-        if (cageMode) {
-            glTexCoord2f(1, 0);
-        } else {
-            glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 0.75 - (flake->texture / 4) * 0.25);
-        }
-        //glVertex3f(flake->pos.x + flake->size, flake->pos.y - flake->size, flake->pos.z);
-        glVertex3f(flake->size, -flake->size, 0);
-        if (cageMode) {
-            glTexCoord2f(1, 1);
-        } else {
-            glTexCoord2f((flake->texture % 4) * 0.25 + 0.25, 1.0 - (flake->texture / 4) * 0.25);
-        }
-        //glVertex3f(flake->pos.x + flake->size, flake->pos.y + flake->size, flake->pos.z);
-        glVertex3f(flake->size, flake->size, 0);
-        glEnd();
-    }
-    texture_snowflake->unbind();
-    m_meshShaderParticle.unbind();
-    glDisable(GL_BLEND);
+        texture_snowflake->unbind();
+        m_meshShaderParticle.unbind();
+        
     }
     //glEnable(GL_DEPTH_TEST);
     glFinish();
@@ -433,6 +443,8 @@ void SnowStormSimulation::load_mesh(const std::string& filenameObj) {
     
     m_Scene.translateWorld(Vector3(0, 0, 0));
     
+    m_Scene.scaleTextureCoord(7);
+    
 }
 
 void SnowStormSimulation::draw_object(Shader& sh, Mesh3D& mesh)
@@ -473,5 +485,118 @@ void SnowStormSimulation::init_particles()
 }
 
 
+
+Mesh3D*
+SnowStormSimulation::
+createCube()
+{
+    // initialize Mesh3D
+    Mesh3D *cube = new Mesh3D();
+    
+	// setup uniform cube with side length 0.5 and center of cube being (0,0,0)
+	std::vector< Vector3 > cubeVertices;
+	std::vector< Vector3 > cubeNormals;
+	std::vector< Vector3 > cubeColors;
+	std::vector< unsigned int > cubeIndices;
+	float d = 1;
+    
+	
+	// front
+	cubeVertices.push_back(Vector3(-d,-d, d));
+	cubeVertices.push_back(Vector3( d,-d, d));
+	cubeVertices.push_back(Vector3( d, d, d));
+	cubeVertices.push_back(Vector3(-d, d, d));
+	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,0,1));
+	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.8,0.3,0.3));
+	cubeIndices.push_back(0);
+	cubeIndices.push_back(1);
+	cubeIndices.push_back(2);
+	cubeIndices.push_back(0);
+	cubeIndices.push_back(2);
+	cubeIndices.push_back(3);
+	
+	
+	// right
+	cubeVertices.push_back(Vector3( d,-d,-d));
+	cubeVertices.push_back(Vector3( d,-d, d));
+	cubeVertices.push_back(Vector3( d, d, d));
+	cubeVertices.push_back(Vector3( d, d,-d));
+	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(1,0,0));
+	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.3,0.8,0.3));
+	cubeIndices.push_back(4);
+	cubeIndices.push_back(5);
+	cubeIndices.push_back(6);
+	cubeIndices.push_back(4);
+	cubeIndices.push_back(6);
+	cubeIndices.push_back(7);
+	
+	
+	// back
+	cubeVertices.push_back(Vector3( d,-d,-d));
+	cubeVertices.push_back(Vector3(-d,-d,-d));
+	cubeVertices.push_back(Vector3(-d, d,-d));
+	cubeVertices.push_back(Vector3( d, d,-d));
+	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,0,-1));
+	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.3,0.3,0.8));
+	cubeIndices.push_back(8);
+	cubeIndices.push_back(9);
+	cubeIndices.push_back(10);
+	cubeIndices.push_back(8);
+	cubeIndices.push_back(10);
+	cubeIndices.push_back(11);
+	
+    
+	// left
+	cubeVertices.push_back(Vector3(-d,-d, d));
+	cubeVertices.push_back(Vector3(-d,-d,-d));
+	cubeVertices.push_back(Vector3(-d, d,-d));
+	cubeVertices.push_back(Vector3(-d, d, d));
+	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(-1,0,0));
+	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.8,0.8,0.3));
+	cubeIndices.push_back(12);
+	cubeIndices.push_back(13);
+	cubeIndices.push_back(14);
+	cubeIndices.push_back(12);
+	cubeIndices.push_back(14);
+	cubeIndices.push_back(15);
+	
+    
+	// top
+	cubeVertices.push_back(Vector3(-d, d,-d));
+	cubeVertices.push_back(Vector3( d, d,-d));
+	cubeVertices.push_back(Vector3( d, d, d));
+	cubeVertices.push_back(Vector3(-d, d, d));
+	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,1,0));
+	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.8,0.3,0.8));
+	cubeIndices.push_back(16);
+	cubeIndices.push_back(17);
+	cubeIndices.push_back(18);
+	cubeIndices.push_back(16);
+	cubeIndices.push_back(18);
+	cubeIndices.push_back(19);
+	
+    
+	// bottom
+	cubeVertices.push_back(Vector3( d,-d,-d));
+	cubeVertices.push_back(Vector3(-d,-d,-d));
+	cubeVertices.push_back(Vector3(-d,-d, d));
+	cubeVertices.push_back(Vector3( d,-d, d));
+	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,-1,0));
+	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.3,0.8,0.8));
+	cubeIndices.push_back(20);
+	cubeIndices.push_back(21);
+	cubeIndices.push_back(22);
+	cubeIndices.push_back(20);
+	cubeIndices.push_back(22);
+	cubeIndices.push_back(23);
+	
+	
+	cube->setIndices(cubeIndices);
+	cube->setVertexPositions(cubeVertices);
+	cube->setVertexNormals(cubeNormals);
+	cube->setVertexColors(cubeColors);
+    
+    return cube;
+}
 
 //=============================================================================

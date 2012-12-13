@@ -6278,7 +6278,7 @@ vn 0.166520 0.969196 -0.181467
 vn 0.080096 0.993902 -0.075790
 vn 0.024814 0.999221 0.030701
 s off
-g scene:pPlane1 scene:polySurface1
+g scene:pPlane1 scene:polySurface2 scene:polySurface1
 usemtl scene:initialShadingGroup
 f 337/546/1 30/30/2 434/547/3 834/290/4
 f 434/547/5 83/83/6 438/548/7 834/290/8
