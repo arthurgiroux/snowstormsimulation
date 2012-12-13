@@ -26,10 +26,14 @@ public:
     double radius;
     double height;
     
+    float randomFloat(float a, float b);
+    
     
     Cone(Vector3 initalPos, double radius, double height, Vector3 direction, Vector3 initialVelocity, Vector3 initialAcceleration);
+    void updatePosition(Vector3 minPos, Vector3 maxPos, float deltaTime);
     Cone();
     ~Cone();
+    
     
     
     

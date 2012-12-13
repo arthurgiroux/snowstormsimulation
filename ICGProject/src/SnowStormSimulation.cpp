@@ -68,6 +68,8 @@ init()
     //texture_snowflake->create("../data/cage.tga");
     texture_snowflake->create("../data/snowflakereal.tga");
     
+    //storms.push_back(new Cone(Vector3(0, 0, 0), 1.0, 2.0, Vector3(0, 1, 0), Vector3(0,0,0), Vector3(0,0,0)));
+    
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -128,7 +130,8 @@ keyboard(int key, int x, int y)
             break;
             
         case 'o':
-            storms.push_back(new Cone(Vector3(0, 0, 0), randomFloat(0,1), randomFloat(0,5), Vector3(0, 1, 0), Vector3(randomFloat(-0.001, 0.001),0,randomFloat(-0.001, 0.001)),Vector3(randomFloat(-0.0001, 0.0001), 0, randomFloat(-0.0001, 0.0001))));
+
+            storms.push_back(new Cone(Vector3(0, 0, 0), randomFloat(1,2), randomFloat(2,5), Vector3(0, 1, 0), Vector3(randomFloat(-0.001, 0.001),0,randomFloat(-0.0005, 0.0005)),Vector3(randomFloat(-0.00005, 0.00005), 0, randomFloat(-0.00005, 0.00005))));
             break;
             
         case 'i':
@@ -345,7 +348,9 @@ draw_scene(DrawMode _draw_mode)
     
         if(isWatchOn)
         {
-            update_storms_positions(minPos, maxPos);
+            for (unsigned int i = 0; i < storms.size(); ++i) {
+                storms[i]->updatePosition(minPos, maxPos, deltaTime);
+            }
         }
     
         double max = MAX_PARTICLES;

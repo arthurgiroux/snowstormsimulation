@@ -66,7 +66,7 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     
         Vector3 acc =  originToFlake.cross(flakeToAxis).normalize();
                 
-        return (acc + 0.3 * flakeToAxis) * 0.02 * (cone->radius / flakeToAxis.length());
+        return (acc + 0.3 * flakeToAxis.normalize()) * 0.00005 * (cone->radius/flakeToAxis.length());
 
     }
     
@@ -83,10 +83,7 @@ void Snowflake::updatePosition(float deltaT, Vector3 min, Vector3 max, std::vect
         hasBeenInit = true;
         
     }
-    // Make the snow fall in world
-    //pos += velocity;
-    //pos += force;
-    //acceleration = Vector3(0.0, -0.00000981f, 0.0);
+
     for (unsigned int i = 0; i < storms.size(); ++i) {
         acceleration += computeAccelerationDueToCone(storms[i]);
     }

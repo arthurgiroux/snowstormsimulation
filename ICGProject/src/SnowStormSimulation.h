@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 20000;
+#define MAX_PARTICLES 30000;
 
 //== INCLUDES =================================================================
 #include <string>
