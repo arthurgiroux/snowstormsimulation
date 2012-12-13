@@ -52,7 +52,7 @@ protected:
 
     void init_particles();
     
-    Mesh3D* createCube();
+    void draw_sky();
     
 protected:
 	
@@ -60,7 +60,6 @@ protected:
 	//Mesh3D m_SnowFlake;
     
     Mesh3D m_Scene;
-    Mesh3D* m_Sky;
 
 	
 	// directional light
@@ -70,6 +69,7 @@ protected:
 	Shader m_meshShaderDiffuse;
 	Shader m_meshShaderParticle;
     Shader m_meshShaderProj;
+    Shader m_meshShaderTex;
 	
 	//timer
 	StopWatch watch;
@@ -88,6 +88,7 @@ protected:
     float walkingSpeed = 0.1;
     
     Texture* texture_snowflake;
+    Texture* texture_sky;
     
     int frame=0;
     int time;

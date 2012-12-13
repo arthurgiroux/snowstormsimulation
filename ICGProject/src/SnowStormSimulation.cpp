@@ -26,6 +26,7 @@ SnowStormSimulation::~SnowStormSimulation()
     }
     
     delete texture_snowflake;
+    delete texture_sky;
 }
 //-----------------------------------------------------------------------------
 
@@ -49,12 +50,11 @@ init()
     m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
     m_meshShaderParticle.create("particle.vs", "particle.fs");
     m_meshShaderProj.create("proj.vs", "proj.fs");
+    m_meshShaderTex.create("tex.vs", "tex.fs");
     
     m_light.translateWorld(Vector3(-3, 5, -10));
     m_Scene.translateWorld(Vector3(1.0, 0.0, 0.0));
     
-    m_Sky = createCube();
-    m_Sky->translateWorld(Vector3(0.0, 0.0, 0.0));
 	currentTime = 0.0;
     
     deltaTime = 0.0;
@@ -67,6 +67,9 @@ init()
     texture_snowflake = new Texture();
     //texture_snowflake->create("../data/cage.tga");
     texture_snowflake->create("../data/snowflakereal.tga");
+    
+    texture_sky = new Texture();
+    texture_sky->create("../data/sky.tga");
     
     //storms.push_back(new Cone(Vector3(0, 0, 0), 1.0, 2.0, Vector3(0, 1, 0), Vector3(0,0,0), Vector3(0,0,0)));
     
@@ -210,14 +213,16 @@ draw_scene(DrawMode _draw_mode)
     
 	glEnable(GL_MULTISAMPLE);
     
+    m_meshShaderTex.bind();
+    m_meshShaderTex.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+    m_meshShaderTex.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    texture_sky->bind();
+    m_meshShaderTex.setIntUniform("texture",texture_sky->getLayer());
     
-    /*m_meshShaderProj.bind();
-    m_meshShaderProj.setMatrix4x4Uniform("modelworld", m_Sky->getTransformation());
-    m_meshShaderProj.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
-    m_meshShaderProj.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
-    draw_object(m_meshShaderProj, *m_Sky);
-    m_meshShaderProj.unbind();*/
-     
+    draw_sky();
+    texture_sky->unbind();
+    m_meshShaderTex.unbind();
+    
 	
 	m_meshShaderDiffuse.bind();
 	
@@ -258,7 +263,6 @@ draw_scene(DrawMode _draw_mode)
     unitBox[7] = m_camera.getTransformation() * Vector3(boxWidth, boxHeightStart, boxFarPlane); // bottom back right
     
     
-    glColor3f(1.0f, 1.0f, 1.0f);
     /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[1],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[2],
@@ -291,6 +295,7 @@ draw_scene(DrawMode _draw_mode)
             maxPos.z = unitBox[i].z;
         }
     }
+    
     
     // (Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright)
     /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
@@ -335,8 +340,8 @@ draw_scene(DrawMode _draw_mode)
     if (initPart) {
         m_meshShaderParticle.bind();
         Object3D* billboard = new Object3D();
-        billboard->rotateObject(Vector3(1, 0, 0), -m_camera.getAngleX());
         billboard->rotateObject(Vector3(0, 1, 0), -m_camera.getAngleY());
+        billboard->rotateObject(Vector3(1, 0, 0), -m_camera.getAngleX());
         m_meshShaderParticle.setMatrix4x4Uniform("billboard", billboard->getTransformation());
         m_meshShaderParticle.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
         m_meshShaderParticle.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
@@ -526,117 +531,45 @@ void SnowStormSimulation::init_particles()
 
 
 
-Mesh3D*
+void
 SnowStormSimulation::
-createCube()
+draw_sky()
 {
-    // initialize Mesh3D
-    Mesh3D *cube = new Mesh3D();
+    float size = 30;
+    // front quad
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.25, 0.66); glVertex3f(  -size, size, -size );
+    glTexCoord2f(0.25, 0.33); glVertex3f( -size, -size, -size );
+    glTexCoord2f(0.50, 0.33); glVertex3f( size,  -size, -size );
+    glTexCoord2f(0.50, 0.66); glVertex3f(  size,  size, -size );
     
-	// setup uniform cube with side length 0.5 and center of cube being (0,0,0)
-	std::vector< Vector3 > cubeVertices;
-	std::vector< Vector3 > cubeNormals;
-	std::vector< Vector3 > cubeColors;
-	std::vector< unsigned int > cubeIndices;
-	float d = 1;
+    // Render the left quad
+    glTexCoord2f(0, 0.66); glVertex3f(  -size, size, size );
+    glTexCoord2f(0, 0.33); glVertex3f(  -size,  -size, size );
+    glTexCoord2f(0.25, 0.33); glVertex3f( -size, -size, -size );
+    glTexCoord2f(0.25, 0.66); glVertex3f( -size, size, -size );
     
-	
-	// front
-	cubeVertices.push_back(Vector3(-d,-d, d));
-	cubeVertices.push_back(Vector3( d,-d, d));
-	cubeVertices.push_back(Vector3( d, d, d));
-	cubeVertices.push_back(Vector3(-d, d, d));
-	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,0,1));
-	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.8,0.3,0.3));
-	cubeIndices.push_back(0);
-	cubeIndices.push_back(1);
-	cubeIndices.push_back(2);
-	cubeIndices.push_back(0);
-	cubeIndices.push_back(2);
-	cubeIndices.push_back(3);
-	
-	
-	// right
-	cubeVertices.push_back(Vector3( d,-d,-d));
-	cubeVertices.push_back(Vector3( d,-d, d));
-	cubeVertices.push_back(Vector3( d, d, d));
-	cubeVertices.push_back(Vector3( d, d,-d));
-	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(1,0,0));
-	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.3,0.8,0.3));
-	cubeIndices.push_back(4);
-	cubeIndices.push_back(5);
-	cubeIndices.push_back(6);
-	cubeIndices.push_back(4);
-	cubeIndices.push_back(6);
-	cubeIndices.push_back(7);
-	
-	
-	// back
-	cubeVertices.push_back(Vector3( d,-d,-d));
-	cubeVertices.push_back(Vector3(-d,-d,-d));
-	cubeVertices.push_back(Vector3(-d, d,-d));
-	cubeVertices.push_back(Vector3( d, d,-d));
-	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,0,-1));
-	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.3,0.3,0.8));
-	cubeIndices.push_back(8);
-	cubeIndices.push_back(9);
-	cubeIndices.push_back(10);
-	cubeIndices.push_back(8);
-	cubeIndices.push_back(10);
-	cubeIndices.push_back(11);
-	
+    // Render the back quad
+    glTexCoord2f(1, 0.66); glVertex3f(  -size, size, size );
+    glTexCoord2f(1, 0.33); glVertex3f( -size, -size, size );
+    glTexCoord2f(0.75, 0.33); glVertex3f( size,  -size, size );
+    glTexCoord2f(0.75, 0.66); glVertex3f(  size,  size, size );
     
-	// left
-	cubeVertices.push_back(Vector3(-d,-d, d));
-	cubeVertices.push_back(Vector3(-d,-d,-d));
-	cubeVertices.push_back(Vector3(-d, d,-d));
-	cubeVertices.push_back(Vector3(-d, d, d));
-	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(-1,0,0));
-	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.8,0.8,0.3));
-	cubeIndices.push_back(12);
-	cubeIndices.push_back(13);
-	cubeIndices.push_back(14);
-	cubeIndices.push_back(12);
-	cubeIndices.push_back(14);
-	cubeIndices.push_back(15);
-	
     
-	// top
-	cubeVertices.push_back(Vector3(-d, d,-d));
-	cubeVertices.push_back(Vector3( d, d,-d));
-	cubeVertices.push_back(Vector3( d, d, d));
-	cubeVertices.push_back(Vector3(-d, d, d));
-	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,1,0));
-	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.8,0.3,0.8));
-	cubeIndices.push_back(16);
-	cubeIndices.push_back(17);
-	cubeIndices.push_back(18);
-	cubeIndices.push_back(16);
-	cubeIndices.push_back(18);
-	cubeIndices.push_back(19);
-	
+    // Render the right quad
+    glTexCoord2f(0.50, 0.66); glVertex3f(  size, size, -size );
+    glTexCoord2f(0.50, 0.33); glVertex3f( size, -size, -size );
+    glTexCoord2f(0.75, 0.33); glVertex3f( size,  -size, size );
+    glTexCoord2f(0.75, 0.66); glVertex3f(  size,  size, size );
     
-	// bottom
-	cubeVertices.push_back(Vector3( d,-d,-d));
-	cubeVertices.push_back(Vector3(-d,-d,-d));
-	cubeVertices.push_back(Vector3(-d,-d, d));
-	cubeVertices.push_back(Vector3( d,-d, d));
-	for(int k = 0; k < 4; k++) cubeNormals.push_back(Vector3(0,-1,0));
-	for(int k = 0; k < 4; k++) cubeColors.push_back(Vector3(0.3,0.8,0.8));
-	cubeIndices.push_back(20);
-	cubeIndices.push_back(21);
-	cubeIndices.push_back(22);
-	cubeIndices.push_back(20);
-	cubeIndices.push_back(22);
-	cubeIndices.push_back(23);
-	
-	
-	cube->setIndices(cubeIndices);
-	cube->setVertexPositions(cubeVertices);
-	cube->setVertexNormals(cubeNormals);
-	cube->setVertexColors(cubeColors);
+    // Render the top quad
+    glTexCoord2f(0.25, 0.66); glVertex3f(  -size, size, -size );
+    glTexCoord2f(0.25, 1); glVertex3f( -size, size, size );
+    glTexCoord2f(0.5, 1); glVertex3f( size,  size, size );
+    glTexCoord2f(0.5, 0.66); glVertex3f(  size,  size, -size );
+ 
+    glEnd();
     
-    return cube;
 }
 
 //=============================================================================

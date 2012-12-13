@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8E54AC051651380800A0CAA4 /* SnowStormSimulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E54AC041651380800A0CAA4 /* SnowStormSimulation.cpp */; };
+		8E5BDCB4167A23E3003C91EF /* tex.vs in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BDCB3167A23E2003C91EF /* tex.vs */; };
+		8E5BDCB6167A23EC003C91EF /* tex.fs in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BDCB5167A23EB003C91EF /* tex.fs */; };
 		8E8C4B661651255F000BA3BD /* ICGProject.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8E8C4B651651255F000BA3BD /* ICGProject.1 */; };
 		8E8C4BA116512963000BA3BD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E8C4BA016512963000BA3BD /* OpenGL.framework */; };
 		8E8C4BA316512968000BA3BD /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E8C4BA216512968000BA3BD /* GLUT.framework */; };
@@ -41,6 +43,8 @@
 /* Begin PBXFileReference section */
 		8E54AC03165137FE00A0CAA4 /* SnowStormSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnowStormSimulation.h; sourceTree = "<group>"; };
 		8E54AC041651380800A0CAA4 /* SnowStormSimulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnowStormSimulation.cpp; sourceTree = "<group>"; };
+		8E5BDCB3167A23E2003C91EF /* tex.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = tex.vs; sourceTree = "<group>"; };
+		8E5BDCB5167A23EB003C91EF /* tex.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = tex.fs; sourceTree = "<group>"; };
 		8E8C4B5F1651255F000BA3BD /* ICGProject */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ICGProject; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E8C4B651651255F000BA3BD /* ICGProject.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = ICGProject.1; sourceTree = "<group>"; };
 		8E8C4B6D165125A7000BA3BD /* Camera3D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Camera3D.h; sourceTree = "<group>"; };
@@ -196,6 +200,8 @@
 				8E8C4B9316512852000BA3BD /* SolarViewer.h */,
 				8EF94678165C3278008E197D /* particle.fs */,
 				8EF9467A165C3281008E197D /* particle.vs */,
+				8E5BDCB3167A23E2003C91EF /* tex.vs */,
+				8E5BDCB5167A23EB003C91EF /* tex.fs */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -264,6 +270,8 @@
 				8EF94679165C3278008E197D /* particle.fs in Sources */,
 				8EF9467B165C3281008E197D /* particle.vs in Sources */,
 				A7198514166765BF00B98C80 /* Cone.cpp in Sources */,
+				8E5BDCB4167A23E3003C91EF /* tex.vs in Sources */,
+				8E5BDCB6167A23EC003C91EF /* tex.fs in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

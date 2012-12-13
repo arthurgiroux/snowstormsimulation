@@ -149,7 +149,8 @@ protected:
     {
 #ifndef STRIP_CODE
 		//double far = getFarPlane();
-        double far = 50.0;
+        // dirty hack
+        double far = 100.0;
 		double near = getNearPlane();
         
 		double top, bottom, left, right;
