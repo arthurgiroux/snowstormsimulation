@@ -9,11 +9,13 @@
 #include "Cone.h"
 
 
-Cone::Cone(Vector3 initialPos, double initialRadius, double initialHeight, Vector3 initialDirection){
+Cone::Cone(Vector3 initialPos, double initialRadius, double initialHeight, Vector3 initialDirection, Vector3 initialVelocity, Vector3 initialAcceleration){
     pos = initialPos;
     radius = initialRadius;
     height = initialHeight;
     direction = initialDirection;
+    velocity = initialVelocity;
+    acceleration = initialAcceleration;
 }
 
 Cone::Cone(){

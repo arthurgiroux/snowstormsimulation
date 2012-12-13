@@ -19,11 +19,15 @@ public:
     
     Vector3 pos;
     Vector3 direction;
+    
+    Vector3 velocity;
+    Vector3 acceleration;
+    
     double radius;
     double height;
     
     
-    Cone(Vector3 initalPos, double radius, double height, Vector3 direction);
+    Cone(Vector3 initalPos, double radius, double height, Vector3 direction, Vector3 initialVelocity, Vector3 initialAcceleration);
     Cone();
     ~Cone();
     

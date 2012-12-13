@@ -66,7 +66,7 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     
         Vector3 acc =  originToFlake.cross(flakeToAxis).normalize();
                 
-        return (acc + 0.3 * flakeToAxis) * 0.00002 * (cone->radius / flakeToAxis.length());
+        return (acc + 0.3 * flakeToAxis) * 0.02 * (cone->radius / flakeToAxis.length());
 
     }
     
