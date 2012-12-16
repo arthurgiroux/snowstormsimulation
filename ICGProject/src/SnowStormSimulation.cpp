@@ -26,7 +26,6 @@ SnowStormSimulation::~SnowStormSimulation()
     }
     
     delete texture_snowflake;
-    delete texture_sky;
 }
 //-----------------------------------------------------------------------------
 
@@ -50,7 +49,7 @@ init()
     m_meshShaderDiffuse.create("diffuse.vs", "diffuse.fs");
     m_meshShaderParticle.create("particle.vs", "particle.fs");
     m_meshShaderProj.create("proj.vs", "proj.fs");
-    m_meshShaderTex.create("tex.vs", "tex.fs");
+    m_meshShaderSky.create("sky.vs", "sky.fs");
     
     m_light.translateWorld(Vector3(-3, 5, -10));
     m_Scene.translateWorld(Vector3(1.0, 0.0, 0.0));
@@ -65,14 +64,10 @@ init()
     
     
     texture_snowflake = new Texture();
-    //texture_snowflake->create("../data/cage.tga");
     texture_snowflake->create("../data/snowflakereal.tga");
     
-    texture_sky = new Texture();
-    texture_sky->create("../data/sky.tga");
-    
-    //storms.push_back(new Cone(Vector3(0, 0, 0), 1.0, 2.0, Vector3(0, 1, 0), Vector3(0,0,0), Vector3(0,0,0)));
-    
+    texture_sky.create_cubemap("../data/sky/skyalt");
+        
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -94,7 +89,7 @@ keyboard(int key, int x, int y)
             drawStorms = !drawStorms;
             break;
 		case ' ':
-			if(isWatchOn)
+			if (isWatchOn)
 			{
 				watch.stop();
 				currentTime = 0.0;
@@ -213,15 +208,7 @@ draw_scene(DrawMode _draw_mode)
     
 	glEnable(GL_MULTISAMPLE);
     
-    m_meshShaderTex.bind();
-    m_meshShaderTex.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
-    m_meshShaderTex.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
-    texture_sky->bind();
-    m_meshShaderTex.setIntUniform("texture",texture_sky->getLayer());
-    
     draw_sky();
-    texture_sky->unbind();
-    m_meshShaderTex.unbind();
     
 	
 	m_meshShaderDiffuse.bind();
@@ -245,12 +232,11 @@ draw_scene(DrawMode _draw_mode)
     
     m_meshShaderDiffuse.unbind();
     
-    
     // Unit box in world coordinates
     Vector3 unitBox[8];
     int boxHeight = 5;
     int boxWidth = 5;
-    int boxHeightStart = -1;
+    int boxHeightStart = -3;
     int boxFarPlane = -5;
     int boxNearPlane = 5;
     unitBox[0] = m_camera.getTransformation() * Vector3(-boxWidth, boxHeight, boxNearPlane); // top front left
@@ -263,7 +249,8 @@ draw_scene(DrawMode _draw_mode)
     unitBox[7] = m_camera.getTransformation() * Vector3(boxWidth, boxHeightStart, boxFarPlane); // bottom back right
     
     
-    /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
+    /*glColor3f(1.0, 0.0, 0.0);
+    draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[1],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[2],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[3],
@@ -271,6 +258,7 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[5],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[6],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);*/
+    
     Vector3 minPos = unitBox[0];
     Vector3 maxPos = unitBox[0];
     
@@ -296,6 +284,7 @@ draw_scene(DrawMode _draw_mode)
         }
     }
     
+    //glColor3f(1.0, 1.0, 1.0);
     
     // (Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright)
     /*draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, minPos.z),
@@ -305,13 +294,14 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, maxPos.y, maxPos.z),
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(minPos.x, minPos.y, maxPos.z),
-              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));*/
+              m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));
+     */
     
     if (drawStorms) {
         draw_storms();
     }
     
-    glBegin(GL_LINES);
+    /*glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
     tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 0);
@@ -332,7 +322,7 @@ draw_scene(DrawMode _draw_mode)
     tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 1);
     glVertex3d(tmp.x, tmp.y, tmp.z);
     
-    glEnd();
+    glEnd();*/
     
     //glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -398,6 +388,7 @@ draw_scene(DrawMode _draw_mode)
         m_meshShaderParticle.unbind();
         
     }
+    glDisable(GL_BLEND);
     //glEnable(GL_DEPTH_TEST);
     glFinish();
 }
@@ -535,40 +526,50 @@ void
 SnowStormSimulation::
 draw_sky()
 {
-    float size = 30;
+    float size = 50;
     // front quad
+    m_meshShaderSky.bind();
+    m_meshShaderSky.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
+    m_meshShaderSky.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
+    texture_sky.bind();
+    m_meshShaderSky.setIntUniform("cubeMap",texture_sky.getLayer());
+    
     glBegin(GL_QUADS);
-    glTexCoord2f(0.25, 0.66); glVertex3f(  -size, size, -size );
-    glTexCoord2f(0.25, 0.33); glVertex3f( -size, -size, -size );
-    glTexCoord2f(0.50, 0.33); glVertex3f( size,  -size, -size );
-    glTexCoord2f(0.50, 0.66); glVertex3f(  size,  size, -size );
+    glVertex3f(  -size, size, -size );
+    glVertex3f( -size, -size, -size );
+    glVertex3f( size,  -size, -size );
+    glVertex3f(  size,  size, -size );
     
     // Render the left quad
-    glTexCoord2f(0, 0.66); glVertex3f(  -size, size, size );
-    glTexCoord2f(0, 0.33); glVertex3f(  -size,  -size, size );
-    glTexCoord2f(0.25, 0.33); glVertex3f( -size, -size, -size );
-    glTexCoord2f(0.25, 0.66); glVertex3f( -size, size, -size );
+    glVertex3f(  -size, size, size );
+    glVertex3f(  -size,  -size, size );
+    glVertex3f( -size, -size, -size );
+    glVertex3f( -size, size, -size );
     
     // Render the back quad
-    glTexCoord2f(1, 0.66); glVertex3f(  -size, size, size );
-    glTexCoord2f(1, 0.33); glVertex3f( -size, -size, size );
-    glTexCoord2f(0.75, 0.33); glVertex3f( size,  -size, size );
-    glTexCoord2f(0.75, 0.66); glVertex3f(  size,  size, size );
+    glVertex3f(  -size, size, size );
+    glVertex3f( -size, -size, size );
+    glVertex3f( size,  -size, size );
+    glVertex3f(  size,  size, size );
     
     
     // Render the right quad
-    glTexCoord2f(0.50, 0.66); glVertex3f(  size, size, -size );
-    glTexCoord2f(0.50, 0.33); glVertex3f( size, -size, -size );
-    glTexCoord2f(0.75, 0.33); glVertex3f( size,  -size, size );
-    glTexCoord2f(0.75, 0.66); glVertex3f(  size,  size, size );
+    glVertex3f(  size, size, -size );
+    glVertex3f( size, -size, -size );
+    glVertex3f( size,  -size, size );
+    glVertex3f(  size,  size, size );
     
     // Render the top quad
-    glTexCoord2f(0.25, 0.66); glVertex3f(  -size, size, -size );
-    glTexCoord2f(0.25, 1); glVertex3f( -size, size, size );
-    glTexCoord2f(0.5, 1); glVertex3f( size,  size, size );
-    glTexCoord2f(0.5, 0.66); glVertex3f(  size,  size, -size );
+    glVertex3f(  -size, size, -size );
+    glVertex3f( -size, size, size );
+    glVertex3f( size,  size, size );
+    glVertex3f(  size,  size, -size );
  
     glEnd();
+    
+    texture_sky.unbind();
+    m_meshShaderSky.unbind();
+
     
 }
 

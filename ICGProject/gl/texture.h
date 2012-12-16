@@ -32,12 +32,18 @@ public:
 				int _param = GL_LINEAR);
 	// Read RGB TGA file
 	void create(const std::string& _fileName);
+    
+    void create_cubemap(const std::string& _fileName);
+    
 	// Write the texture in a RGB TGA file
 	void write(const std::string& _fileName) const;
 
 	void bind() const;
 	void unbind() const;
 	
+    void bind_cubemap() const;
+	void unbind_cubemap() const;
+    
 	//Multi Texturing: channel of this texture
 	void setLayer(unsigned int _layer);
 	unsigned int getLayer() const;

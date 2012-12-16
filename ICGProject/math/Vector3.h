@@ -103,10 +103,11 @@ public:
 
 	Vector3 normalize() { 
 		double l = length();
-		assert(l != 0);
-		x /= l;
-		y /= l;
-		z /= l;
+		if (l != 0) {
+            x /= l;
+            y /= l;
+            z /= l;
+        }
 		return *this;
 	}
 

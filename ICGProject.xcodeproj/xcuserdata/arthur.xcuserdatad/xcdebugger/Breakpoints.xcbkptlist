@@ -207,9 +207,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "16"
-         endingLineNumber = "16"
-         landmarkName = "main()"
-         landmarkType = "7">
+         endingLineNumber = "16">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -280,19 +278,6 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "ICGProject/src/Snowflake.cpp"
-         timestampString = "376471938.507351"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "62"
-         endingLineNumber = "62"
-         landmarkName = "Snowflake::computeAccelerationDueToCone(const Cone* cone)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "ICGProject/src/Snowflake.h"
          timestampString = "376471938.507351"
          startingColumnNumber = "9223372036854775807"
@@ -307,7 +292,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/Snowflake.cpp"
-         timestampString = "376472330.840652"
+         timestampString = "377359579.277686"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "30"
@@ -318,11 +303,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377106671.723799"
+         timestampString = "377368613.717965"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "369"
-         endingLineNumber = "369"
+         startingLineNumber = "371"
+         endingLineNumber = "371"
          landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -331,11 +316,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377103550.370181"
+         timestampString = "377367482.341099"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "148"
-         endingLineNumber = "148"
+         startingLineNumber = "143"
+         endingLineNumber = "143"
          landmarkName = "SnowStormSimulation:: keyboard(int key, int x, int y)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -344,7 +329,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/Snowflake.cpp"
-         timestampString = "376471938.507351"
+         timestampString = "377359579.277686"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "45"
@@ -368,12 +353,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377106671.723799"
+         timestampString = "377368613.717965"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "475"
-         endingLineNumber = "475"
-         landmarkName = "SnowStormSimulation::update_storms_positions(Vector3 minPos, Vector3 maxPos)"
+         startingLineNumber = "478"
+         endingLineNumber = "478"
+         landmarkName = "SnowStormSimulation::load_mesh(const std::string&amp; filenameObj)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -381,23 +366,103 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377106671.723799"
+         timestampString = "377368613.717965"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "458"
-         endingLineNumber = "458">
+         startingLineNumber = "461"
+         endingLineNumber = "461"
+         landmarkName = "SnowStormSimulation::update_storms_positions(Vector3 minPos, Vector3 maxPos)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "Yes"
+         shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/Snowflake.cpp"
-         timestampString = "377083224.635188"
+         timestampString = "377353213.068955"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "13"
          endingLineNumber = "13"
          landmarkName = "Snowflake::Snowflake()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ICGProject/src/Snowflake.cpp"
+         timestampString = "377359579.277686"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "14"
+         endingLineNumber = "14"
+         landmarkName = "Snowflake::Snowflake()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ICGProject/src/SnowStormSimulation.cpp"
+         timestampString = "377368613.717965"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "252"
+         endingLineNumber = "252"
+         landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ICGProject/src/SnowStormSimulation.cpp"
+         timestampString = "377368613.717965"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "251"
+         endingLineNumber = "251"
+         landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ICGProject/src/SnowStormSimulation.cpp"
+         timestampString = "377368613.717965"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "253"
+         endingLineNumber = "253"
+         landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ICGProject/gl/texture.cpp"
+         timestampString = "377375834.464917"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "136"
+         endingLineNumber = "136"
+         landmarkName = "Texture::create_cubemap(const std::string&amp; _fileName)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "ICGProject/gl/texture.cpp"
+         timestampString = "377375736.60703"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "133"
+         endingLineNumber = "133"
+         landmarkName = "Texture::create_cubemap(const std::string&amp; _fileName)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

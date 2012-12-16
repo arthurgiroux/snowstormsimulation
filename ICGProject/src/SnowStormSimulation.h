@@ -1,7 +1,7 @@
 #ifndef MESH_VIEWER_HH
 #define MESH_VIEWER_HH
 
-#define MAX_PARTICLES 30000;
+#define MAX_PARTICLES 50000;
 
 //== INCLUDES =================================================================
 #include <string>
@@ -69,7 +69,7 @@ protected:
 	Shader m_meshShaderDiffuse;
 	Shader m_meshShaderParticle;
     Shader m_meshShaderProj;
-    Shader m_meshShaderTex;
+    Shader m_meshShaderSky;
 	
 	//timer
 	StopWatch watch;
@@ -88,7 +88,7 @@ protected:
     float walkingSpeed = 0.1;
     
     Texture* texture_snowflake;
-    Texture* texture_sky;
+    Texture texture_sky;
     
     int frame=0;
     int time;

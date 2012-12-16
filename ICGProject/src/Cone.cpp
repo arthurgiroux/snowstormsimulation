@@ -36,7 +36,7 @@ float Cone::randomFloat(float a, float b) {
 
 
 void Cone::updatePosition(Vector3 minPos, Vector3 maxPos, float deltaTime) {
-    pos = pos + deltaTime * velocity + 0.5 * acceleration * deltaTime*deltaTime;
+    pos += deltaTime * velocity + 0.5 * acceleration * deltaTime*deltaTime;
     if (pos.x > maxPos.x || pos.x < minPos.x ||
        pos.z > maxPos.z || pos.z < minPos.z)
     {

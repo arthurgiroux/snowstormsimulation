@@ -11,6 +11,7 @@
 //=============================================================================
 #include "texture.h"
 #include <fstream>
+#include <sstream>
 #include <cassert>
 ///////////////////////////////////////////////////////////////////////////
 Texture::Texture() : id_(0), layer_(0), width_(0), height_(0)
@@ -112,6 +113,56 @@ void Texture::create(const std::string& _fileName)
 	delete [] data;
 }
 ///////////////////////////////////////////////////////////////////////////
+void Texture::create_cubemap(const std::string& _fileName)
+{
+    GLenum cube_map_target[6] = {
+        GL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB,
+        GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB,
+        GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB,
+        GL_TEXTURE_CUBE_MAP_POSITIVE_Y_ARB,
+        GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB,
+        GL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB
+    };
+    
+    clear();
+    glGenTextures(1, &id_);
+    glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, id_);
+	assert(id_ != 0);
+
+    for (int i = 0; i < 6; i++) {
+        std::ostringstream oss;
+        oss << i;
+        std::string result = oss.str();
+        std::ifstream stream(_fileName.c_str() + oss.str() + ".tga", std::ios::binary);
+        assert(stream.is_open());
+        if(!stream.is_open()) return;
+        TGA_HEADER header;
+        stream.read((char *)(&header), sizeof(TGA_HEADER));
+        assert(header.width <= 4096 && header.height <= 4096 && header.imagetype == 2 && header.bits == 24);
+        width_ = header.width;
+        height_ = header.height;
+        unsigned int sizeImg = width_*height_;
+        char *data = new char[sizeImg*3];
+        stream.read(data, sizeImg*3);
+        for(unsigned int i = 0; i < sizeImg; i++)
+        {
+            unsigned pos = i*3;
+            unsigned char red = data[pos];
+            data[pos] = data[pos + 2];
+            data[pos + 2] = red;
+        }
+        glTexImage2D(cube_map_target[i], 0, GL_RGB, width_, height_, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        stream.close();
+        delete [] data;
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    
+}
+///////////////////////////////////////////////////////////////////////////
 void Texture::write(const std::string& _fileName) const
 {
 	assert(id_ != 0);
@@ -156,6 +207,16 @@ void Texture::bind() const
 	glActiveTextureARB(GL_TEXTURE0_ARB+layer_);
 	glBindTexture(GL_TEXTURE_2D, id_);
 }
+
+///////////////////////////////////////////////////////////////////////////
+void Texture::bind_cubemap() const
+{
+	assert(id_ != 0);
+	glEnable(GL_TEXTURE_CUBE_MAP_ARB);
+	glActiveTextureARB(GL_TEXTURE0_ARB+layer_);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, id_);
+}
+
 ///////////////////////////////////////////////////////////////////////////
 void Texture::unbind() const
 {
@@ -163,6 +224,14 @@ void Texture::unbind() const
 	glActiveTextureARB(GL_TEXTURE0_ARB+layer_);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
+}
+///////////////////////////////////////////////////////////////////////////
+void Texture::unbind_cubemap() const
+{
+	assert(id_ != 0);
+	glActiveTextureARB(GL_TEXTURE0_ARB+layer_);
+	glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, 0);
+	glDisable(GL_TEXTURE_CUBE_MAP_ARB);
 }
 ///////////////////////////////////////////////////////////////////////////
 void Texture::setLayer(unsigned int _layer)

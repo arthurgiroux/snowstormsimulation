@@ -39,7 +39,7 @@ void Snowflake::randomInit(Vector3 min, Vector3 max) {
                       max.y,
                       randomFloat(min.z, max.z));
     }
-    velocity = Vector3(randomFloat(-0.0003, 0.0003), randomFloat(-0.0003, 0), randomFloat(-0.0003, 0.0003));
+    velocity = Vector3(randomFloat(-0.0003, 0.0003), randomFloat(-0.0005, -0.0002), randomFloat(-0.0003, 0.0003));
 }
 
 Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
@@ -57,16 +57,11 @@ Vector3 Snowflake::computeAccelerationDueToCone(const Cone* cone){
     
     if (flakeIsInCone)
     {
-        //fprintf(stderr, "flake \n");
-        //give a test acceleration (normally, should compute the tangent direction, and give an acceleration relative to the distance from the axis
-      //  Vector3 coneDirection = cone->direction;
-       // Vector3 heightVector = cone->height * coneDirection.normalize();
-
         Vector3 flakeToAxis = Vector3(cone->pos.x, pos.y, cone->pos.z) - pos;
     
         Vector3 acc =  originToFlake.cross(flakeToAxis).normalize();
-                
-        return (acc + 0.3 * flakeToAxis.normalize()) * 0.00005 * (cone->radius/flakeToAxis.length());
+
+        return (acc - 0.3 * originToFlake.normalize()) * 0.00005 * (cone->radius/flakeToAxis.length()) + Vector3(0.0, -0.00000981f, 0.0);
 
     }
     
@@ -85,9 +80,11 @@ void Snowflake::updatePosition(float deltaT, Vector3 min, Vector3 max, std::vect
     }
 
     for (unsigned int i = 0; i < storms.size(); ++i) {
-        acceleration += computeAccelerationDueToCone(storms[i]);
-    }
-    
+        Vector3 accCone = computeAccelerationDueToCone(storms[i]);
+        if (accCone.length() != 0) {
+            acceleration = accCone;
+        }
+    }    
     pos += deltaT * velocity + 0.5 * acceleration * deltaT*deltaT;
     
 
