@@ -252,7 +252,6 @@ public:
     
     
     void scaleTextureCoord(int ratio) {
-        cout << m_vertexUV.size() << endl;
         for (int i = 0; i < m_vertexUV.size(); ++i) {
             m_vertexUV[i] = m_vertexUV[i] * ratio;
         }

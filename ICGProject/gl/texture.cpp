@@ -84,16 +84,23 @@ void Texture::create(const std::string& _fileName)
 	if(!stream.is_open()) return;
 	TGA_HEADER header;
 	stream.read((char *)(&header), sizeof(TGA_HEADER));
-	assert(header.width <= 4096 && header.height <= 4096 && header.imagetype == 2 && header.bits == 32);
+	assert(header.width <= 4096 && header.height <= 4096 && header.imagetype == 2 && header.bits >= 24);
 	clear();
 	width_ = header.width;
 	height_ = header.height;
 	unsigned int sizeImg = width_*height_;
-	char *data = new char[sizeImg*4];
-	stream.read(data, sizeImg*4);
+    // ALPHA TRANSPARENCY
+    int canalNbr = 3;
+    int mode = GL_RGB;
+    if (header.bits == 32) {
+        canalNbr = 4;
+        mode = GL_RGBA;
+    }
+	char *data = new char[sizeImg*canalNbr];
+	stream.read(data, sizeImg*canalNbr);
 	for(unsigned int i = 0; i < sizeImg; i++)
 	{
-		unsigned pos = i*4;
+		unsigned pos = i*canalNbr;
 		unsigned char red = data[pos];
 		data[pos] = data[pos + 2];
 		data[pos + 2] = red;
@@ -101,7 +108,7 @@ void Texture::create(const std::string& _fileName)
 	glGenTextures(1, &id_);
 	assert(id_ != 0);
 	glBindTexture(GL_TEXTURE_2D, id_);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, width_, height_, 0, mode, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmapEXT(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

@@ -14,7 +14,6 @@
 		8E8C4BA116512963000BA3BD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E8C4BA016512963000BA3BD /* OpenGL.framework */; };
 		8E8C4BA316512968000BA3BD /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E8C4BA216512968000BA3BD /* GLUT.framework */; };
 		8E8C4BA4165129AD000BA3BD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C4B8F16512852000BA3BD /* main.cpp */; };
-		8E8C4BA5165129B0000BA3BD /* SolarViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C4B9216512852000BA3BD /* SolarViewer.cpp */; };
 		8E8C4BA6165129C6000BA3BD /* fbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C4B6E165125A7000BA3BD /* fbo.cpp */; };
 		8E8C4BA7165129CC000BA3BD /* GlutViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C4B71165125A7000BA3BD /* GlutViewer.cpp */; };
 		8E8C4BA8165129D9000BA3BD /* Mesh3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8E8C4B74165125A7000BA3BD /* Mesh3D.cpp */; };
@@ -263,7 +262,6 @@
 				8E8C4BA8165129D9000BA3BD /* Mesh3D.cpp in Sources */,
 				8E8C4BA7165129CC000BA3BD /* GlutViewer.cpp in Sources */,
 				8E8C4BA6165129C6000BA3BD /* fbo.cpp in Sources */,
-				8E8C4BA5165129B0000BA3BD /* SolarViewer.cpp in Sources */,
 				8E8C4BA4165129AD000BA3BD /* main.cpp in Sources */,
 				8E54AC051651380800A0CAA4 /* SnowStormSimulation.cpp in Sources */,
 				A7276D531654D5F600B5546F /* Snowflake.cpp in Sources */,
@@ -304,7 +302,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				New_Setting = "";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -329,6 +327,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				New_Setting = "";
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;

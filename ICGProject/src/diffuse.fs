@@ -18,7 +18,4 @@ void main()
 
 	finalcolor += vec4(diffuseColor,1.0)*0.1;
     gl_FragColor = finalcolor;
-    //gl_FragColor = mix(finalcolor, vec4(1.0, 0.0, 0.0, 1.0), fogResult);
-
-	lightcolor;
 }

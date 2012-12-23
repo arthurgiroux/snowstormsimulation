@@ -51,7 +51,7 @@ init()
     m_meshShaderProj.create("proj.vs", "proj.fs");
     m_meshShaderSky.create("sky.vs", "sky.fs");
     
-    m_light.translateWorld(Vector3(-3, 5, -10));
+    m_light.translateWorld(Vector3(-10, 10, 20));
     m_Scene.translateWorld(Vector3(1.0, 0.0, 0.0));
     
 	currentTime = 0.0;
@@ -66,7 +66,7 @@ init()
     texture_snowflake = new Texture();
     texture_snowflake->create("../data/snowflakereal.tga");
     
-    texture_sky.create_cubemap("../data/sky/skyalt");
+    texture_sky.create_cubemap("../data/sky/sky");
         
     glEnable(GL_DEPTH_TEST);
 }
@@ -80,13 +80,17 @@ keyboard(int key, int x, int y)
 {
 	switch (key)
 	{
-		case 'h':
-			printf("Help:\n");
-			printf("'h'\t-\thelp\n");
-			printf("'arrow keys\t-\tchange speed of rotation\n");
-			break;
         case 's':
             drawStorms = !drawStorms;
+            break;
+        case 'x':
+            altSky = !altSky;
+            if (altSky) {
+                texture_sky.create_cubemap("../data/sky/skyalt");
+            }
+            else {
+                texture_sky.create_cubemap("../data/sky/sky");
+            }
             break;
 		case ' ':
 			if (isWatchOn)
@@ -133,7 +137,9 @@ keyboard(int key, int x, int y)
             break;
             
         case 'i':
-            storms.pop_back();
+            if (storms.size() > 0) {
+                storms.pop_back();
+            }
             break;
 		default:
 			TrackballViewer::special(key, x, y);
@@ -213,11 +219,10 @@ draw_scene(DrawMode _draw_mode)
 	
 	m_meshShaderDiffuse.bind();
 	
-	// set parameters
+	// draw the mountain
 	m_meshShaderDiffuse.setMatrix4x4Uniform("worldcamera", m_camera.getTransformation().Inverse());
 	m_meshShaderDiffuse.setMatrix4x4Uniform("projection", m_camera.getProjectionMatrix());
 
-	//scene
 	Vector3 lightPosInCamera = m_camera.getTransformation().Inverse() * m_light.origin();
 	
 	m_meshShaderDiffuse.setMatrix3x3Uniform("worldcameraNormal", m_camera.getTransformation().Transpose());
@@ -226,7 +231,7 @@ draw_scene(DrawMode _draw_mode)
     m_meshShaderDiffuse.setIntUniform("texture", m_Scene.getMaterial(0).m_diffuseTexture.getLayer());
 	m_meshShaderDiffuse.setVector3Uniform("lightposition", lightPosInCamera.x, lightPosInCamera.y, lightPosInCamera.z );
 	m_meshShaderDiffuse.setVector3Uniform("diffuseColor", 0.5, 0.5, 0.5);
-    m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.29, 0.28, 0.19);
+    m_meshShaderDiffuse.setVector3Uniform("lightcolor", 0.8, 0.8, 0.8);
 	
     draw_object(m_meshShaderDiffuse, m_Scene);
     
@@ -249,6 +254,7 @@ draw_scene(DrawMode _draw_mode)
     unitBox[7] = m_camera.getTransformation() * Vector3(boxWidth, boxHeightStart, boxFarPlane); // bottom back right
     
     
+    // Draw the camera-aligned box
     /*glColor3f(1.0, 0.0, 0.0);
     draw_cube(m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[0],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[1],
@@ -259,6 +265,7 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[6],
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * unitBox[7]);*/
     
+    // Compute the min/max value for the world aligned box
     Vector3 minPos = unitBox[0];
     Vector3 maxPos = unitBox[0];
     
@@ -284,6 +291,8 @@ draw_scene(DrawMode _draw_mode)
         }
     }
     
+    // Draw the world-aligned box
+    
     //glColor3f(1.0, 1.0, 1.0);
     
     // (Vector3 topfrontleft, Vector3 topfrontright, Vector3 bottomfrontleft, Vector3 bottomfrontright, Vector3 topbackleft, Vector3 topbackright, Vector3 bottombackleft, Vector3 bottombackright)
@@ -297,11 +306,14 @@ draw_scene(DrawMode _draw_mode)
               m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(maxPos.x, minPos.y, maxPos.z));
      */
     
+    // Draw the storms
     if (drawStorms) {
         draw_storms();
     }
     
-    /*glBegin(GL_LINES);
+    // Draw the axis
+    /*
+    glBegin(GL_LINES);
     glColor3f(1.0f, 0.0f, 0.0f);
     Vector3 tmp;
     tmp = m_camera.getProjectionMatrix() * m_camera.getTransformation().Inverse() * Vector3(0, 1, 0);
@@ -324,7 +336,7 @@ draw_scene(DrawMode _draw_mode)
     
     glEnd();*/
     
-    //glDisable(GL_DEPTH_TEST);
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if (initPart) {
@@ -352,11 +364,13 @@ draw_scene(DrawMode _draw_mode)
         for (int i = 0; i < max; i++)
         {
             Snowflake* flake = particles[i];
-            if(isWatchOn)
+            // Update flake's position if the watch is on
+            if (isWatchOn)
             {
                 flake->updatePosition(deltaTime, minPos, maxPos, storms);
             }
             m_meshShaderParticle.setVector3Attribute("pos", flake->pos.x, flake->pos.y, flake->pos.z);
+            // Draw the flakes
             glBegin(GL_QUADS);
             if (altMode) {
                 glTexCoord2f(0, 1);
@@ -389,7 +403,6 @@ draw_scene(DrawMode _draw_mode)
         
     }
     glDisable(GL_BLEND);
-    //glEnable(GL_DEPTH_TEST);
     glFinish();
 }
 
@@ -456,16 +469,13 @@ float SnowStormSimulation::randomFloat(float a, float b) {
 
 void SnowStormSimulation::update_storms_positions(Vector3 minPos, Vector3 maxPos)
 {
-    
-
-    
     for(unsigned int i = 0; i < storms.size(); ++i){
         Cone *storm = storms[i];
         storm->pos = storm->pos + deltaTime * storm->velocity + 0.5 * storm->acceleration * deltaTime*deltaTime;
         if(storm->pos.x > maxPos.x || storm->pos.x < minPos.x ||
            storm->pos.z > maxPos.z || storm->pos.z < minPos.z)
         {
-            storm->pos = Vector3(randomFloat(minPos.x, maxPos.x),0, randomFloat(minPos.z, maxPos.z));
+            storm->pos = Vector3(randomFloat(minPos.x, maxPos.x), 0, randomFloat(minPos.z, maxPos.z));
         }
 
     }
@@ -516,15 +526,12 @@ void SnowStormSimulation::init_particles()
     {
         particles.push_back(new Snowflake());
     }
-    
-    
 }
 
 
 
 void
-SnowStormSimulation::
-draw_sky()
+SnowStormSimulation::draw_sky()
 {
     float size = 50;
     // front quad

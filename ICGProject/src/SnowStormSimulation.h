@@ -90,15 +90,16 @@ protected:
     Texture* texture_snowflake;
     Texture texture_sky;
     
-    int frame=0;
+    int frame = 0;
     int time;
-    int timebase=0;
+    int timebase = 0;
     float ratio = 1.0;
     float fps = 0;
     
     bool altMode = false;
     bool drawStorms = false;
     bool initPart = false;
+    bool altSky = false;
     
 };
 

@@ -207,7 +207,9 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "16"
-         endingLineNumber = "16">
+         endingLineNumber = "16"
+         landmarkName = "main()"
+         landmarkType = "7">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -303,11 +305,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377368613.717965"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "371"
-         endingLineNumber = "371"
+         startingLineNumber = "378"
+         endingLineNumber = "378"
          landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -316,11 +318,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377367482.341099"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "143"
-         endingLineNumber = "143"
+         startingLineNumber = "149"
+         endingLineNumber = "149"
          landmarkName = "SnowStormSimulation:: keyboard(int key, int x, int y)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -353,11 +355,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377368613.717965"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "478"
-         endingLineNumber = "478"
+         startingLineNumber = "485"
+         endingLineNumber = "485"
          landmarkName = "SnowStormSimulation::load_mesh(const std::string&amp; filenameObj)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -366,11 +368,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377368613.717965"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "461"
-         endingLineNumber = "461"
+         startingLineNumber = "468"
+         endingLineNumber = "468"
          landmarkName = "SnowStormSimulation::update_storms_positions(Vector3 minPos, Vector3 maxPos)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -405,11 +407,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377368613.717965"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "252"
-         endingLineNumber = "252"
+         startingLineNumber = "258"
+         endingLineNumber = "258"
          landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -418,11 +420,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377368613.717965"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "251"
-         endingLineNumber = "251"
+         startingLineNumber = "257"
+         endingLineNumber = "257"
          landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -431,11 +433,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/src/SnowStormSimulation.cpp"
-         timestampString = "377368613.717965"
+         timestampString = "377950772.083144"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "253"
-         endingLineNumber = "253"
+         startingLineNumber = "259"
+         endingLineNumber = "259"
          landmarkName = "SnowStormSimulation:: draw_scene(DrawMode _draw_mode)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -444,11 +446,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/gl/texture.cpp"
-         timestampString = "377375834.464917"
+         timestampString = "377471080.838055"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "136"
-         endingLineNumber = "136"
+         startingLineNumber = "143"
+         endingLineNumber = "143"
          landmarkName = "Texture::create_cubemap(const std::string&amp; _fileName)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -457,11 +459,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ICGProject/gl/texture.cpp"
-         timestampString = "377375736.60703"
+         timestampString = "377471080.838055"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "133"
-         endingLineNumber = "133"
+         startingLineNumber = "140"
+         endingLineNumber = "140"
          landmarkName = "Texture::create_cubemap(const std::string&amp; _fileName)"
          landmarkType = "5">
       </FileBreakpoint>
